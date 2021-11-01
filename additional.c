@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 18:36:42 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/01 16:18:37 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/01 19:08:16 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 void	test_memalloc(void)
 {
@@ -22,6 +23,14 @@ void	test_memalloc(void)
 	int		i;
 
 	ptr = ft_memalloc(sizeof(char) * 8);
+	ft_putstr("...ft_memalloc\n");
+	i = 0;
+	while (i < 8)
+	{
+		printf("%p: %d\n", ptr + i, *(int *) (ptr + i));
+		assert(*(int *) (ptr + i) == 0);
+		i++;
+	}
 	str = (char *) ptr;
 	i = 0;
 	while (i < 7)
@@ -30,7 +39,6 @@ void	test_memalloc(void)
 		i++;
 	}
 	str[i] = '\0';
-	ft_putstr("...ft_memalloc\n");
 	assert(strcmp("aaaaaaa", (char *) ptr) == 0);
 	free(ptr);
 	str = 0;
@@ -124,4 +132,38 @@ void	test_striteri(void)
 		i++;
 	}
 	assert(str[i] == '\0');
+}
+
+static char	f_strmap(char c)
+{
+	return (c + 1);
+}
+
+void	test_strmap(void)
+{
+	char const	s1[] = "fortytwo";
+	char		*s2;
+
+	ft_putstr("...ft_strmap\n");
+	s2 = ft_strmap(s1, &f_strmap);
+	printf("%s\n", s2);
+	assert(strcmp("gpsuzuxp", s2) == 0);
+	free(s2);
+}
+
+static char	f_strmapi(unsigned int i, char c)
+{
+	return (c + i);
+}
+
+void	test_strmapi(void)
+{
+	char const	s1[] = "00000000";
+	char		*s2;
+
+	ft_putstr("..ft_strmapi\n");
+	s2 = ft_strmapi(s1, &f_strmapi);
+	printf("%s\n", s2);
+	assert(strcmp("01234567", s2) == 0);
+	free(s2);
 }
