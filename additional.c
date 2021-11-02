@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 18:36:42 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/02 15:39:28 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/02 18:42:41 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -222,4 +222,38 @@ void	test_strtrim(void)
 	printf("%s\n", str);
 	assert(strcmp("forty \t\n two", str) == 0);
 	free(str);
+}
+
+static void	free_str_arr(char **str_arr)
+{
+	while (**str_arr)
+		free(*str_arr++);
+	free(*str_arr);
+}
+
+void	test_strsplit(void)
+{
+	char const	s1[] = "The ships hung in the sky in much the same way that bricks don't.";
+	char const	s2[] = "Time is an illusion. Lunchtime doubly so.";
+	char const	s3[] = "//////////Don't/////////// ////////////Panic////////!////";
+	char		**words1;
+	char		**words2;
+	char		**words3;
+
+	printf("...ft_strsplit\n");
+	words1 = ft_strsplit(s1, ' ');
+	printf("[%s]\n", words1[7]);
+	assert(strcmp(words1[7], "much") == 0);
+	words2 = ft_strsplit(s2, '.');
+	printf("[%s]\n", words2[1]);
+	assert(strcmp(words2[1], " Lunchtime doubly so") == 0);
+	words3 = ft_strsplit(s3, '/');
+	printf("[%s]\n", words3[3]);
+	assert(strcmp(words3[3], "!") == 0);
+	free_str_arr(words1);
+	free_str_arr(words2);
+	free_str_arr(words3);
+	free(words1);
+	free(words2);
+	free(words3);
 }

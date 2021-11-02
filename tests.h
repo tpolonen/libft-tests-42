@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/30 18:49:43 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/02 15:35:45 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/02 17:52:19 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,4 +27,5 @@ void	test_strnequ(void);
 void	test_strsub(void);
 void	test_strjoin(void);
 void	test_strtrim(void);
+void	test_strsplit(void);
 #endif
