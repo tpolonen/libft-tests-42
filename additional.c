@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   tests.c                                            :+:      :+:    :+:   */
+/*   additional.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 18:36:42 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/02 12:25:35 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/02 15:39:28 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	test_memalloc(void)
 	void	*ptr;
 	int		i;
 
-	ptr = ft_memalloc(sizeof(char) * 8);
+	ptr = ft_memalloc(8);
 	printf("...ft_memalloc\n");
 	i = 0;
 	while (i < 8)
@@ -186,4 +186,40 @@ void	test_strsub(void)
 	s2 = ft_strsub(s1, 4, 8);
 	printf("%s\n", s2);
 	assert(strcmp("fortytwo", s2) == 0);
+	free(s2);
+}
+
+void	test_strjoin(void)
+{
+	char const	s1[] = "forty";
+	char const	s2[] = "two";
+	char		*str;
+
+	printf("...ft_strjoin\n");
+	str = ft_strjoin(s1, s2);
+	printf("%s\n", str);
+	assert(strcmp("fortytwo", str) == 0);
+	free(str);
+}
+
+void	test_strtrim(void)
+{
+	char const	s1[] = "\t\n forty \t\n two \t\n";
+	char const	s2[] = "forty \t\n two \t\n";
+	char const	s3[] = "\t\n forty \t\n two";
+	char		*str;
+
+	printf("...ft_strtrim\n");
+	str = ft_strtrim(s1);
+	printf("%s\n", str);
+	assert(strcmp("forty \t\n two", str) == 0);
+	free(str);
+	str = ft_strtrim(s2);
+	printf("%s\n", str);
+	assert(strcmp("forty \t\n two", str) == 0);
+	free(str);
+	str = ft_strtrim(s3);
+	printf("%s\n", str);
+	assert(strcmp("forty \t\n two", str) == 0);
+	free(str);
 }
