@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 18:36:42 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/03 13:23:33 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/03 16:34:04 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -261,7 +261,7 @@ void	test_strsplit(void)
 
 static void	validate_itoa(int n, char const *expected)
 {
-	printf("%d = %s\n", n, ft_itoa(n));
+	printf("%d = [%s]\n", n, ft_itoa(n));
 	assert(strcmp(ft_itoa(n), expected) == 0);
 }
 
