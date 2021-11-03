@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 18:36:42 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/02 18:42:41 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/03 13:23:33 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	test_memalloc(void)
 	while (i < 8)
 	{
 		printf("%p: %d\n", ptr + i, *(int *) (ptr + i));
-		assert(*(int *) (ptr + i) == 0);
+		assert(*(char *) (ptr + i) == 0);
 		i++;
 	}
 	free(ptr);
@@ -231,29 +231,52 @@ static void	free_str_arr(char **str_arr)
 	free(*str_arr);
 }
 
+static void	validate_split(char const *s, char c, size_t i, char const *expected)
+{
+	char	**words;
+
+	words = ft_strsplit(s, c);
+	printf("[%s]\n", words[i]);
+	assert(strcmp(words[i], expected) == 0);
+	free_str_arr(words);
+	free(words);
+}
+
 void	test_strsplit(void)
 {
 	char const	s1[] = "The ships hung in the sky in much the same way that bricks don't.";
 	char const	s2[] = "Time is an illusion. Lunchtime doubly so.";
 	char const	s3[] = "//////////Don't/////////// ////////////Panic////////!////";
-	char		**words1;
-	char		**words2;
-	char		**words3;
+	char const	s4[] = "fortytwo";
+	char const	s5[] = "";
 
 	printf("...ft_strsplit\n");
-	words1 = ft_strsplit(s1, ' ');
-	printf("[%s]\n", words1[7]);
-	assert(strcmp(words1[7], "much") == 0);
-	words2 = ft_strsplit(s2, '.');
-	printf("[%s]\n", words2[1]);
-	assert(strcmp(words2[1], " Lunchtime doubly so") == 0);
-	words3 = ft_strsplit(s3, '/');
-	printf("[%s]\n", words3[3]);
-	assert(strcmp(words3[3], "!") == 0);
-	free_str_arr(words1);
-	free_str_arr(words2);
-	free_str_arr(words3);
-	free(words1);
-	free(words2);
-	free(words3);
+	validate_split(s1, ' ', 7, "much");
+	validate_split(s2, '.', 1, " Lunchtime doubly so");
+	validate_split(s3, '/', 3, "!");
+	validate_split(s4, '\t', 0, "fortytwo");
+	validate_split(s4, '\a', 1, "\0");
+	validate_split(s5, '\n', 0, "\0");
+}
+
+static void	validate_itoa(int n, char const *expected)
+{
+	printf("%d = %s\n", n, ft_itoa(n));
+	assert(strcmp(ft_itoa(n), expected) == 0);
+}
+
+void	test_itoa(void)
+{
+	int	n1 = 42;
+	int	n2 = -42;
+	int	n3 = 0;
+	int n4 = -2147483647;
+	int	n5 = 2147483647;
+
+	printf("...ft_itoa\n");
+	validate_itoa(n1, "42");
+	validate_itoa(n2, "-42");
+	validate_itoa(n3, "0");
+	validate_itoa(n4, "-2147483647");
+	validate_itoa(n5, "2147483647");
 }
