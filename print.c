@@ -6,15 +6,12 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/03 13:48:14 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/03 17:41:25 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/04 19:34:05 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <assert.h>
-#define FPATH ".test"
+#include "tests.h"
 
 void	test_putchar(void)
 {

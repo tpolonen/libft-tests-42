@@ -6,22 +6,20 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 18:36:42 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/03 16:34:04 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/04 23:24:07 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-#include <assert.h>
-#include <stdlib.h>
-#include <stdio.h>
+#include "tests.h"
 
 void	test_memalloc(void)
 {
 	void	*ptr;
 	int		i;
 
-	ptr = ft_memalloc(8);
 	printf("...ft_memalloc\n");
+	ptr = ft_memalloc(8);
 	i = 0;
 	while (i < 8)
 	{
@@ -36,9 +34,9 @@ void	test_memdel(void)
 {
 	void	*ptr;
 
+	printf("...ft_memdel\n");
 	ptr = malloc(8);
 	ft_memdel(&ptr);
-	printf("...ft_memdel\n");
 	assert(ptr == 0);
 }
 
@@ -47,10 +45,10 @@ void	test_strnew(void)
 	char	*str;
 	size_t	size, i;
 
+	printf("...ft_strnew\n");
 	size = 8;
 	str = ft_strnew(sizeof(char) * size);
 	i = 0;
-	printf("...ft_strnew\n");
 	while (i < size)
 	{
 		assert(str[i] == '\0');
@@ -62,9 +60,9 @@ void	test_strdel(void)
 {
 	char	*str;
 
+	printf("...ft_strdel\n");
 	str = (char *) malloc(sizeof(char) * 8);
 	ft_strdel(&str);
-	printf("...ft_strdel\n");
 	assert(str == 0);
 }
 
@@ -73,9 +71,9 @@ void 	test_strclr(void)
 	char	str[] = "fortytwo";
 	int		i;
 
+	printf("...ft_strclr\n");
 	ft_strclr(str);
 	i = 0;
-	printf("...ft_strclr\n");
 	while (i <= 8)
 	{
 		assert(str[i] == '\0');
@@ -93,9 +91,9 @@ void	test_striter(void)
 	char	str[] = "fortytwo";
 	int		i;
 
+	printf("...ft_striter\n");
 	ft_striter(str, &f_striter);
 	i = 0;
-	printf("...ft_striter\n");
 	while (i < 8)
 		assert(str[i++] == 'a');
 	assert(str[i] == '\0');
@@ -111,9 +109,9 @@ void	test_striteri(void)
 	char	str[] = "fortytwo";
 	int		i;
 
+	printf("...ft_striteri\n");
 	ft_striteri(str, &f_striteri);
 	i = 0;
-	printf("...ft_striteri\n");
 	while (i < 8)
 	{
 		assert(str[i] == '0' + i);
