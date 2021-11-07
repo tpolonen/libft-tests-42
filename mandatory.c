@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/04 19:31:23 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/05 15:58:25 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/07 19:18:37 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,9 +57,49 @@ void	test_memcpy(void)
 	assert(memcmp(str1, str2, sizeof(char) * len + 2) == 0);
 }
 
+static void rand_memmove(size_t len, int i)
+{
+	size_t	test_src;
+	size_t	test_dst;
+	size_t	test_len;
+	char*	str_rand;
+	char*	str1;
+	char*	str2;
+
+	str_rand = rand_str(len);
+	str1 = strdup(str_rand);
+	str2 = strdup(str_rand);
+	if (str1 == NULL || str2 == NULL)
+	{
+		printf("error allocating memory: [%s]\n", strerror(errno));
+		abort();
+	}
+	test_len = arc4random_uniform(len);
+	test_src = arc4random_uniform(len - test_len);
+	test_dst = arc4random_uniform(len - test_len);
+	memmove((str1 + test_dst), (str1 + test_src), test_len);
+	ft_memmove((str2 + test_dst), (str2 + test_src), test_len);
+	if (memcmp(str1, str2, sizeof(char) * len) != 0)
+	{
+		printf("failed for test #%d (%zu chars):\n", i, len);
+		printf("src %zu dst %zu, len %zu\n", test_src, test_dst, test_len);
+		printf("original:\t[%s]\nmemmove:\t[%s]\nft_memmove:\t[%s]\n", str_rand, str1, str2);
+		abort();
+	}
+	free(str_rand);
+	free(str1);
+	free(str2);
+}
+
 void	test_memmove(void)
 {
+	int		tests = 100;
+	int		i = 0;
+	size_t	max_len = 100;
 
+	printf("...ft_memmove\n");
+	while (i < tests)
+		rand_memmove(arc4random_uniform(max_len), i++);
 }
 
 void	test_memchr(void)
@@ -146,18 +186,19 @@ void	test_strnstr(void)
 
 }
 
-void	rand_strcmp(size_t min_len, size_t same_chars, size_t variance)
+static void	rand_strcmp(size_t len, size_t same_chars, int i)
 {
 	char	*str1;
 	char	*str2;
-	size_t 	cur_len = min_len + (arc4random() % variance);
-	size_t	cur_same_chars = same_chars + (arc4random() % variance);
 
-	rand_substrs(&str1, &str2, cur_same_chars, cur_len - cur_same_chars);
+	if (!rand_substrs(&str1, &str2, same_chars, len - same_chars))
+	{
+		fprintf(stderr, "rand_substrs failed\n");
+		abort();
+	}
 	if (ft_strcmp(str1, str2) != strcmp(str1, str2))
 	{
-		printf("failed for [%s] vs [%s]\n", str1, str2);
-		abort();
+		printf("test %d: failed for [%s] vs [%s]\n", i, str1, str2);
 	}
 	free(str1);
 	free(str2);
@@ -166,21 +207,45 @@ void	rand_strcmp(size_t min_len, size_t same_chars, size_t variance)
 void	test_strcmp(void)
 {
 	int		tests = 100;
-	size_t	min_len = 50;
+	int		i = 0;
+	size_t	len = 24;
 	size_t	same_chars = 12;
-	size_t	variance = 8;
 		
 	printf("...ft_strcmp\n");
-	while (tests > 0)
-	{
-		rand_strcmp(min_len, same_chars, variance);
-		tests--;
-	}
+	while (i < tests)
+		rand_strcmp(len, same_chars, i++);
 }
+
+static void	rand_strncmp(size_t len, size_t same_chars)
+{
+	char	*str1;
+	char	*str2;
+	size_t	i;
+
+	rand_substrs(&str1, &str2, same_chars, len - same_chars);
+	i = arc4random() % len;
+	if (ft_strncmp(str1, str2, i) != strncmp(str1, str2, i))
+	{
+		printf("failed for [%s] vs [%s], i=%zu\n", str1, str2, i);
+		abort();
+	}
+	free(str1);
+	free(str2);
+}	
+
 
 void	test_strncmp(void)
 {
-
+	int		tests = 100;
+	size_t	len = 24;
+	size_t	same_chars = 12;
+		
+	printf("...ft_strncmp\n");
+	while (tests > 0)
+	{
+		rand_strncmp(len, same_chars);
+		tests--;
+	}
 }
 
 void	test_atoi(void)
