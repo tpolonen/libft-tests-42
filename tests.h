@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/30 18:49:43 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/08 14:07:51 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/09 22:15:14 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,12 @@
 # define FPATH ".test"
 # include <sys/errno.h>
 # include <assert.h>
-# include <stdlib.h>
+# include <bsd/stdlib.h>
 # include <stdio.h>
 # include <time.h>
 # include <ctype.h>
 # include <limits.h>
-# include <string.h>
+# include <bsd/string.h>
 
 /* Utility functions */
 char	rand_char(void);

@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/04 19:31:23 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/09 19:39:39 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/09 23:06:29 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ void	test_memcmp(void)
 
 void	test_strlen(void)
 {
-	int		tests = 100;
+	int		tests = 0;
 	size_t	max_len = 1000;
 	size_t	cur_len;
 	char	*str;
@@ -119,7 +119,6 @@ void	test_strlen(void)
 		if (ft_strlen(str) != strlen(str))
 		{
 			printf("failed for str [%s]\n", str);
-			free(str);
 			abort();
 		}
 		free(str);
@@ -140,6 +139,8 @@ static void	rand_strdup(size_t max_len, size_t i)
 		printf("test #%zu failed\nstr: [%s]\ndup: [%s]\n", i, str, dup);
 		abort();
 	}
+	free(str);
+	free(dup);
 }
 
 void	test_strdup(void)
@@ -285,7 +286,7 @@ static void	rand_strlcat(size_t max_len, size_t i)
 	libc_total = strlcat(libc_cat, src, dest_len + 1);
 	if (ft_total != libc_total || strcmp(ft_cat, libc_cat) != 0)
 	{
-		printf("test #%zu failed (dstsize=%zu)\n", i, dest_len);
+		printf("test #%zu failed (dstsize=%zu, src len=%zu)\n", i, dest_len, strlen(src));
 		printf("strlcat returned %zu, ft_strlcat %zu\n", libc_total, ft_total);
 		printf("src\t[%s]\nlibc\t[%s]\nlibft\t[%s]\n", src, libc_cat, ft_cat);
 		abort();
