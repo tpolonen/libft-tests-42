@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/04 19:31:23 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/08 19:53:13 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/09 19:39:39 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,9 +151,30 @@ void	test_strdup(void)
 		rand_strdup(100, i++);
 }
 
+static void	rand_strcpy(size_t max_len, size_t i)
+{
+	size_t	len = randi(max_len);
+	char	*str, *cpy;
+
+	str = (char *) malloc(sizeof(char) * (len + 1));
+	cpy = (char *) malloc(sizeof(char) * (len + 1));
+	bzero(cpy, len);
+	rand_str(str, len);
+	cpy = ft_strcpy(str, cpy);
+	if (strcmp(str, cpy) != 0)
+	{
+		printf("test #%zu failed\nstr: [%s]\ncpy: [%s]\n", i, str, cpy);
+		abort();
+	}
+}
+
 void	test_strcpy(void)
 {
+	size_t tests = 100, i = 0;
 
+	printf("...ft_strcpy\n");
+	while (i < tests)
+		rand_strcpy(100, i++);
 }
 
 void	test_strncpy(void)
@@ -244,9 +265,43 @@ void	test_strncat(void)
 		rand_strncat(50, i++);
 }
 
+static void	rand_strlcat(size_t max_len, size_t i)
+{
+	char	*src, *ft_cat, *libc_cat;
+	size_t	src_len = randi(max_len);
+	size_t	root_len = randi(max_len);
+	size_t	dest_len = root_len + randi(src_len);
+	size_t	libc_total, ft_total;
+
+	src = (char *) malloc(sizeof(char) * (src_len + 1));
+	rand_str(src, src_len);
+	ft_cat = (char *) malloc(sizeof(char) * (dest_len + 1));
+	libc_cat = (char *) malloc(sizeof(char) * (dest_len + 1));
+	bzero(ft_cat, dest_len);
+	bzero(libc_cat, dest_len);
+	rand_str(ft_cat, root_len);
+	strncat(libc_cat, ft_cat, root_len);
+	ft_total = ft_strlcat(ft_cat, src, dest_len + 1);
+	libc_total = strlcat(libc_cat, src, dest_len + 1);
+	if (ft_total != libc_total || strcmp(ft_cat, libc_cat) != 0)
+	{
+		printf("test #%zu failed (dstsize=%zu)\n", i, dest_len);
+		printf("strlcat returned %zu, ft_strlcat %zu\n", libc_total, ft_total);
+		printf("src\t[%s]\nlibc\t[%s]\nlibft\t[%s]\n", src, libc_cat, ft_cat);
+		abort();
+	}
+	free(src);
+	free(ft_cat);
+	free(libc_cat);
+}
+
 void	test_strlcat(void)
 {
+	size_t tests = 100, i = 0;
 
+	printf("...ft_strlcat\n");
+	while (i < tests)
+		rand_strlcat(75, i++);
 }
 
 void	test_strchr(void)

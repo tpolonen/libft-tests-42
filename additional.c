@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 18:36:42 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/04 23:24:07 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/09 17:13:07 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -240,6 +240,23 @@ static void	validate_split(char const *s, char c, size_t i, char const *expected
 	free(words);
 }
 
+static void validate_full_split(char const *s, char c, char const **expected)
+{
+	char	**words;
+	int	i = 0;
+
+	words = ft_strsplit(s, c);
+	while (words[i][0])
+	{
+		printf("[%s] vs [%s]\n", words[i], expected[i]);
+		assert(strcmp(words[i], expected[i]) == 0);
+		i++;
+	}
+	printf("[%s] vs [%s]\n", words[i], expected[i]);
+	assert(strcmp(words[i], expected[i]) == 0);	
+}
+
+
 void	test_strsplit(void)
 {
 	char const	s1[] = "The ships hung in the sky in much the same way that bricks don't.";
@@ -248,6 +265,8 @@ void	test_strsplit(void)
 	char const	s4[] = "fortytwo";
 	char const	s5[] = "";
 
+	char const *full_s1[] = { "The", "ships", "hung", "in", "the", "sky", "in", "much", "the", "same", "way", "that", "bricks", "don't.", "\0" };
+
 	printf("...ft_strsplit\n");
 	validate_split(s1, ' ', 7, "much");
 	validate_split(s2, '.', 1, " Lunchtime doubly so");
@@ -255,12 +274,17 @@ void	test_strsplit(void)
 	validate_split(s4, '\t', 0, "fortytwo");
 	validate_split(s4, '\a', 1, "\0");
 	validate_split(s5, '\n', 0, "\0");
+	validate_full_split(s1, ' ', full_s1);
 }
 
-static void	validate_itoa(int n, char const *expected)
+static void	validate_itoa(int n)
 {
-	printf("%d = [%s]\n", n, ft_itoa(n));
-	assert(strcmp(ft_itoa(n), expected) == 0);
+	char	itoa[30];
+
+	sprintf(itoa, "%d", n);
+	printf("expecting [%s], got ", itoa);
+	printf("[%s]\n", ft_itoa(n));
+	assert(strcmp(ft_itoa(n), itoa) == 0);
 }
 
 void	test_itoa(void)
@@ -268,13 +292,13 @@ void	test_itoa(void)
 	int	n1 = 42;
 	int	n2 = -42;
 	int	n3 = 0;
-	int n4 = -2147483647;
-	int	n5 = 2147483647;
+	int n4 = INT_MIN;
+	int	n5 = INT_MAX;
 
 	printf("...ft_itoa\n");
-	validate_itoa(n1, "42");
-	validate_itoa(n2, "-42");
-	validate_itoa(n3, "0");
-	validate_itoa(n4, "-2147483647");
-	validate_itoa(n5, "2147483647");
+	validate_itoa(n1);
+	validate_itoa(n2);
+	validate_itoa(n3);
+	validate_itoa(n4);
+	validate_itoa(n5);
 }
