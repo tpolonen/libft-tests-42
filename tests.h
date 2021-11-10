@@ -6,14 +6,13 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/30 18:49:43 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/10 14:32:25 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/10 18:52:53 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef TESTS_H
 # define TESTS_H
 # define FPATH ".test"
-# define NULLCHECK 1
 # include <sys/errno.h>
 # include <assert.h>
 # include <stdio.h>
@@ -34,11 +33,13 @@ char	*rand_str(char* str, size_t len);
 void	rand_substrs(char *str1, char *str2, size_t len_pre, size_t len_post);
 size_t	randi(size_t max);
 void	print_mem(void *ptr, size_t size);
+int		signtest(int i1, int i2);
 
 /* Functions from the "Mandatory" section */
 void	test_memset(void);
 void	test_bzero(void);
 void	test_memcpy(void);
+void	test_memccpy(void);
 void	test_memmove(void);
 void	test_memchr(void);
 void	test_memcmp(void);

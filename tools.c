@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/05 11:39:40 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/10 15:02:34 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/10 16:54:15 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,4 +52,13 @@ void	print_mem(void *ptr, size_t size)
 		printf("%c", *(char *)ptr++);
 		size--;
 	}
+}
+
+int		signtest(int i1, int i2)
+{
+	i1 /= abs(i1);
+	i2 /= abs(i2);
+	if (i1 == i2)
+		return (1);
+	else return (0);
 }

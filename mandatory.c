@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/04 19:31:23 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/10 15:58:56 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/10 18:51:02 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,12 @@ void	test_memset(void)
 	char	c = rand_char();
 
 	printf("...ft_memset\n");
-	if (NULLCHECK)
-	{
+	#ifdef NULLCHECK
 		memset(NULL, c, (0));
 		printf("nullcheck ");
 		ft_memset(NULL, c, (0));
 		printf("OK\n");
-	}
+	#endif
 	ptr1 = (char *) malloc(sizeof(char) * 9);
 	ptr2 = (char *) malloc(sizeof(char) * 9);
 	bzero(ptr1, 9);
@@ -46,13 +45,12 @@ void	test_bzero(void)
 	size_t 	len = strlen(str1);
 
 	printf("...ft_bzero\n");
-	if (NULLCHECK)
-	{
+	#ifdef NULLCHECK
 		bzero(NULL, (0));
 		printf("nullcheck ");
 		ft_bzero(NULL, (0));
 		printf("OK\n");
-	}
+	#endif
 	ft_bzero(str1, len);
 	bzero(str2, len);
 	assert(memcmp(str1, str2, sizeof(char) * len) == 0);
@@ -65,8 +63,7 @@ void	test_memcpy(void)
 	size_t 	len = 8;
 
 	printf("...ft_memcpy\n");
-	if (NULLCHECK)
-	{
+	#ifdef NULLCHECK
 		memcpy(NULL, str1, 0);
 		memcpy(str2, NULL, 0);
 		memcpy(NULL, NULL, len);
@@ -75,10 +72,15 @@ void	test_memcpy(void)
 		ft_memcpy(str2, NULL, 0);
 		ft_memcpy(NULL, NULL, len);
 		printf("OK\n");
-	}
+	#endif
 	ft_memcpy(str2, str1, len);
 	printf("[%s]\n", str2);
 	assert(memcmp(str1, str2, sizeof(char) * len + 2) == 0);
+}
+
+void	test_memccpy(void)
+{
+	printf("...ft_memccpy\n");
 }
 
 static void	const_test_memmove(int i)
@@ -110,11 +112,10 @@ void	test_memmove(void)
 {
 	int		tests = 100;
 	int		i = 0;
-	char	nullcheck[] = "fortytwo";
 
 	printf("...ft_memmove\n");
-	if (NULLCHECK)
-	{
+	#ifdef NULLCHECK
+		char nullcheck[] = "fortytwo";
 		memmove(NULL, NULL, 1);
 		memmove(NULL, nullcheck, 0);
 		memmove(nullcheck, NULL, 0);
@@ -123,7 +124,7 @@ void	test_memmove(void)
 		ft_memmove(NULL, nullcheck, 0);
 		ft_memmove(nullcheck, NULL, 0);
 		printf("OK\n");
-	}
+	#endif
 	while (i < tests)
 		const_test_memmove(i++);
 	i = 0;
@@ -186,20 +187,23 @@ static void	same_memcmp(size_t max_size, size_t i)
 {
 	size_t	size = randi(max_size), j = 0;
 	void	*ptr1, *ptr2;
+	int		ft_result, libc_result;
 
 	ptr1 = malloc(size);
 	ptr2 = malloc(size);
 	while (j < size)
 		memset(ptr1 + j++, rand_char(), 1);
 	memcpy(ptr2, ptr1, size);
-	if (ft_memcmp(ptr1, ptr2, size) != memcmp(ptr1, ptr2, size))
+	if ((ft_result = ft_memcmp(ptr1, ptr2, size)) != (libc_result = memcmp(ptr1, ptr2, size)))
 	{
 		printf("test #%zu failed:\nptr1: [", i);
 		print_mem(ptr1, size);
 		printf("]\nptr2: [");
 		print_mem(ptr2, size);
-		printf("]\ngot %d, expected %d\n", ft_memcmp(ptr1, ptr2, size), memcmp(ptr1, ptr2, size));
-		abort();
+		printf("]\ngot %d, expected %d\n", ft_result, libc_result);
+		if (!signtest(ft_result, libc_result))
+			abort();
+		else printf("same sign though, continuing\n");
 	}
 	free(ptr1);
 	free(ptr2);
@@ -212,6 +216,7 @@ static void	diff_memcmp(size_t max_size_pre, size_t max_size_post, size_t i)
 	size_t	size = size_pre + size_post;
 	size_t	j = 0;
 	void	*ptr1, *ptr2;
+	int		ft_result, libc_result;
 
 	ptr1 = malloc(size_pre + size_post);
 	ptr2 = malloc(size_pre + size_post);
@@ -224,14 +229,16 @@ static void	diff_memcmp(size_t max_size_pre, size_t max_size_post, size_t i)
 		memset(ptr2 + j, rand_char(), 1);
 		j++;
 	}
-	if (ft_memcmp(ptr1, ptr2, size) != memcmp(ptr1, ptr2, size))
+	if ((ft_result = ft_memcmp(ptr1, ptr2, size)) != (libc_result = memcmp(ptr1, ptr2, size)))
 	{
-		printf("test #%zu failed:\nptr1: [", i);
+		printf("test #%zu failed (size_pre=%zu, size_post=%zu, size=%zu)\nptr1: [", i, size_pre, size_post, size);
 		print_mem(ptr1, size);
 		printf("]\nptr2: [");
 		print_mem(ptr2, size);
 		printf("]\ngot %d, expected %d\n", ft_memcmp(ptr1, ptr2, size), memcmp(ptr1, ptr2, size));
-		abort();
+		if (!signtest(ft_result, libc_result))
+			abort();
+		else printf("same sign though, continuing\n");
 	}
 	free(ptr1);
 	free(ptr2);
@@ -461,8 +468,8 @@ static void	rand_strlcat(size_t max_len, size_t i)
 {
 	char	*src, *ft_cat, *libc_cat;
 	size_t	src_len = randi(max_len);
-	size_t	root_len = randi(max_len);
-	size_t	dest_len = root_len + randi(src_len);
+	size_t	root_len = randi(max_len) + 1;
+	size_t	dest_len = root_len + randi(src_len) + 1;
 	size_t	libc_total, ft_total;
 
 	src = (char *) malloc(sizeof(char) * (src_len + 1));
@@ -492,7 +499,9 @@ void	test_strlcat(void)
 	size_t tests = 100, i = 0;
 
 	printf("...ft_strlcat\n");
-	rand_strlcat(0, i++);
+	#ifndef LINUX
+		rand_strlcat(0, i++);
+	#endif
 	while (i < tests)
 		rand_strlcat(75, i++);
 }
@@ -587,7 +596,6 @@ static void	not_found_strrchr(size_t max_len, char seek, size_t i)
 	free(str);
 }
 
-
 void	test_strrchr(void)
 {
 	size_t	tests = 100, i = 0;
@@ -627,14 +635,17 @@ static void	strcmp_same(size_t max_len)
 {
 	size_t len_pre = randi(max_len);
 	char *str1, *str2;
+	int	ft_result, libc_result;
 
 	str1 = (char *) malloc (sizeof(char) * (len_pre + 1));
 	str2 = (char *) malloc (sizeof(char) * (len_pre + 1));
 	rand_substrs(str1, str2, len_pre, 0);
-	if (ft_strcmp(str1, str2) != strcmp(str1, str2))
+	if ((ft_result = ft_strcmp(str1, str2)) != (libc_result = strcmp(str1, str2)))
 	{
 		strcmp_printout(str1, str2);
-		abort();
+		if (signtest(ft_result, libc_result))
+			printf("same sign though, continuing\n");
+		else abort();
 	}
 	free(str1);
 	free(str2);
@@ -645,14 +656,17 @@ static void	strcmp_same_len(size_t max_len_pre, size_t max_len_post)
 	size_t len_pre = randi(max_len_pre);
 	size_t len_post = randi(max_len_post);
 	char *str1, *str2;
+	int	ft_result, libc_result;
 
 	str1 = (char *) malloc (sizeof(char) * (len_pre + len_post + 1));
 	str2 = (char *) malloc (sizeof(char) * (len_pre + len_post + 1));
 	rand_substrs(str1, str2, len_pre, len_post);
-	if (ft_strcmp(str1, str2) != strcmp(str1, str2))
+	if ((ft_result = ft_strcmp(str1, str2)) != (libc_result = strcmp(str1, str2)))
 	{
 		strcmp_printout(str1, str2);
-		abort();
+		if (signtest(ft_result, libc_result))
+			printf("same sign though, continuing\n");
+		else abort();
 	}
 	free(str1);
 	free(str2);
@@ -662,6 +676,7 @@ static void strcmp_diff_len(size_t max_len)
 {
 	size_t len = randi(max_len);
 	char *str1, *str2;
+	int	ft_result, libc_result;
 
 	str1 = (char *) malloc (sizeof(char) * (len + 1));
 	str2 = (char *) malloc (sizeof(char) * (len + 1));
@@ -670,10 +685,12 @@ static void strcmp_diff_len(size_t max_len)
 		*(str1 + randi(len)) = '\0';
 	else
 		*(str2 + randi(len)) = '\0';
-	if (ft_strcmp(str1, str2) != strcmp(str1, str2))
+	if ((ft_result = ft_strcmp(str1, str2)) != (libc_result = strcmp(str1, str2)))
 	{
 		strcmp_printout(str1, str2);
-		abort();
+		if (signtest(ft_result, libc_result))
+			printf("same sign though, continuing\n");
+		else abort();
 	}
 	free(str1);
 	free(str2);
@@ -721,14 +738,17 @@ static void	strncmp_same(size_t max_len)
 	size_t 	len_pre = randi(max_len);
 	size_t	n = randi(len_pre);
 	char 	*str1, *str2;
+	int	ft_result, libc_result;
 
 	str1 = (char *) malloc (sizeof(char) * (len_pre + 1));
 	str2 = (char *) malloc (sizeof(char) * (len_pre + 1));
 	rand_substrs(str1, str2, len_pre, 0);
-	if (ft_strncmp(str1, str2, n) != strncmp(str1, str2, n))
+	if ((ft_result = ft_strncmp(str1, str2, n)) != (libc_result = strncmp(str1, str2, n)))
 	{
 		strncmp_printout(str1, str2, n);
-		abort();
+		if (signtest(ft_result, libc_result))
+			printf("same sign though, continuing\n");
+		else abort();
 	}
 	free(str1);
 	free(str2);
@@ -740,14 +760,17 @@ static void	strncmp_same_len(size_t max_len_pre, size_t max_len_post)
 	size_t	len_post = randi(max_len_post);
 	size_t	n = randi(len_pre + len_post);
 	char	*str1, *str2;
+	int	ft_result, libc_result;
 
 	str1 = (char *) malloc (sizeof(char) * (len_pre + len_post + 1));
 	str2 = (char *) malloc (sizeof(char) * (len_pre + len_post + 1));
 	rand_substrs(str1, str2, len_pre, len_post);
-	if (ft_strncmp(str1, str2, n) != strncmp(str1, str2, n))
+	if ((ft_result = ft_strncmp(str1, str2, n)) != (libc_result = strncmp(str1, str2, n)))
 	{
 		strncmp_printout(str1, str2, n);
-		abort();
+		if (signtest(ft_result, libc_result))
+			printf("same sign though, continuing\n");
+		else abort();
 	}
 	free(str1);
 	free(str2);
@@ -758,6 +781,7 @@ static void strncmp_diff_len(size_t max_len)
 	size_t	len = randi(max_len);
 	size_t	n = randi(len);
 	char	*str1, *str2;
+	int	ft_result, libc_result;
 
 	str1 = (char *) malloc (sizeof(char) * (len + 1));
 	str2 = (char *) malloc (sizeof(char) * (len + 1));
@@ -766,10 +790,12 @@ static void strncmp_diff_len(size_t max_len)
 		*(str1 + randi(len)) = '\0';
 	else
 		*(str2 + randi(len)) = '\0';
-	if (ft_strncmp(str1, str2, n) != strncmp(str1, str2, n))
+	if ((ft_result = ft_strncmp(str1, str2, n)) != (libc_result = strncmp(str1, str2, n)))
 	{
 		strncmp_printout(str1, str2, n);
-		abort();
+		if (signtest(ft_result, libc_result))
+			printf("same sign though, continuing\n");
+		else abort();
 	}
 	free(str1);
 	free(str2);
