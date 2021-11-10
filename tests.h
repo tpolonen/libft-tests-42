@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/30 18:49:43 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/10 11:58:19 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/10 14:32:25 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,9 @@
 /* Utility functions */
 char	rand_char(void);
 char	*rand_str(char* str, size_t len);
-char	*rrand_str(char* str, size_t max_len);
+void	rand_substrs(char *str1, char *str2, size_t len_pre, size_t len_post);
 size_t	randi(size_t max);
+void	print_mem(void *ptr, size_t size);
 
 /* Functions from the "Mandatory" section */
 void	test_memset(void);

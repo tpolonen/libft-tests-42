@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/04 19:31:23 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/10 13:45:44 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/10 15:58:56 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,26 +129,39 @@ void	test_memmove(void)
 	i = 0;
 }
 
-static void	rand_memchr(size_t max_size, size_t i)
+static void	found_memchr(size_t max_size, size_t i)
 {
 	size_t	size = randi(max_size);
 	void	*ptr;
 	char	seek = rand_char();
-
+	
 	ptr = malloc(size);
 	memset(ptr, rand_char(), size);
-	if (randi(10) > 6)
-		memset(ptr + randi(size), seek, 1);
+	memset(ptr + randi(size), seek, 1);
 	if (ft_memchr(ptr, seek, size) != memchr(ptr, seek, size))
 	{
 		printf("test #%zu failed (c=%c)\nptr: [", i, seek);
-		while (size > 0)
-		{
-			printf("%c", *(char *)ptr++);
-			size--;
-		}
+		print_mem(ptr, size);
 		printf("]\n");
 		printf("libc:\t%p\nlibft:\t%p\n", memchr(ptr, seek, size), ft_memchr(ptr, seek, size));
+		abort();
+	}
+	free(ptr);
+}
+
+static void	not_found_memchr(size_t max_size, size_t i)
+{
+	size_t	size = randi(max_size);
+	void	*ptr;
+	
+	ptr = malloc(size);
+	memset(ptr, rand_char(), size);
+	if (ft_memchr(ptr, '\t', size) != memchr(ptr, '\t', size))
+	{
+		printf("test #%zu failed\nptr: [", i);
+		print_mem(ptr, size);
+		printf("]\n");
+		printf("libc:\t%p\nlibft:\t%p\n", memchr(ptr, '\t', size), ft_memchr(ptr, '\t', size));
 		abort();
 	}
 	free(ptr);
@@ -159,13 +172,84 @@ void	test_memchr(void)
 	size_t	tests = 100, i = 0;
 
 	printf("...ft_memchr\n");
+	found_memchr(0, i++);
+	printf("seeking present char\n");
 	while (i < tests)
-		rand_memchr(50, i++);
+		found_memchr(100, i++);
+	i = 0;
+	printf("seeking missing char\n");
+	while (i < tests)
+		not_found_memchr(100, i++);
+}
+
+static void	same_memcmp(size_t max_size, size_t i)
+{
+	size_t	size = randi(max_size), j = 0;
+	void	*ptr1, *ptr2;
+
+	ptr1 = malloc(size);
+	ptr2 = malloc(size);
+	while (j < size)
+		memset(ptr1 + j++, rand_char(), 1);
+	memcpy(ptr2, ptr1, size);
+	if (ft_memcmp(ptr1, ptr2, size) != memcmp(ptr1, ptr2, size))
+	{
+		printf("test #%zu failed:\nptr1: [", i);
+		print_mem(ptr1, size);
+		printf("]\nptr2: [");
+		print_mem(ptr2, size);
+		printf("]\ngot %d, expected %d\n", ft_memcmp(ptr1, ptr2, size), memcmp(ptr1, ptr2, size));
+		abort();
+	}
+	free(ptr1);
+	free(ptr2);
+}
+
+static void	diff_memcmp(size_t max_size_pre, size_t max_size_post, size_t i)
+{
+	size_t 	size_pre = randi(max_size_pre);
+	size_t 	size_post = randi(max_size_post);
+	size_t	size = size_pre + size_post;
+	size_t	j = 0;
+	void	*ptr1, *ptr2;
+
+	ptr1 = malloc(size_pre + size_post);
+	ptr2 = malloc(size_pre + size_post);
+	while (j < size_pre)
+		memset(ptr1 + j++, rand_char(), 1);
+	memcpy(ptr2, ptr1, size_pre);
+	while (j < size)
+	{
+		memset(ptr1 + j, rand_char(), 1);
+		memset(ptr2 + j, rand_char(), 1);
+		j++;
+	}
+	if (ft_memcmp(ptr1, ptr2, size) != memcmp(ptr1, ptr2, size))
+	{
+		printf("test #%zu failed:\nptr1: [", i);
+		print_mem(ptr1, size);
+		printf("]\nptr2: [");
+		print_mem(ptr2, size);
+		printf("]\ngot %d, expected %d\n", ft_memcmp(ptr1, ptr2, size), memcmp(ptr1, ptr2, size));
+		abort();
+	}
+	free(ptr1);
+	free(ptr2);
 }
 
 void	test_memcmp(void)
 {
+	size_t	tests = 100, i = 0;
 
+	printf("...ft_memcmp\n");
+	printf("comparing similar pointers\n");
+	same_memcmp(0, i++);
+	while (i < tests)
+		same_memcmp(100, i++);
+	i = 0;
+	printf("comparing differing pointers\n");
+	while (i < tests)
+		diff_memcmp(100,50, i++);
 }
 
 static void	rand_strlen(size_t max_len, size_t i)
@@ -413,14 +497,114 @@ void	test_strlcat(void)
 		rand_strlcat(75, i++);
 }
 
+static void	found_strchr(size_t max_len, char seek, size_t i)
+{
+	size_t	len = randi(max_len);
+	char	*str;
+
+	str = (char *) malloc(sizeof(char) * len + 1);
+	rand_str(str, len);
+	str[randi(len)] = seek;
+	if (ft_strchr(str, seek) != strchr(str, seek))
+	{
+		printf("test #%zu failed (c=%c)\n", i, seek);
+		printf("str: [%s]\nlibc:\t%p\nlibft:\t%p\n", str, strchr(str, seek), ft_strchr(str, seek));
+		abort();
+	}
+	free(str);
+}
+
+static void	not_found_strchr(size_t max_len, char seek, size_t i)
+{
+	size_t	len = randi(max_len);
+	char	*str;
+
+	str = (char *) malloc(sizeof(char) * len + 1);
+	rand_str(str, len);
+	if (ft_strchr(str, seek) != strchr(str, seek))
+	{
+		printf("test #%zu failed\n", i);
+		printf("str: [%s]\nlibc:\t%p\nlibft:\t%p\n", str, strchr(str, seek), ft_strchr(str, seek));
+		abort();
+	}
+	free(str);
+}
+
 void	test_strchr(void)
 {
+	size_t	tests = 100, i = 0;
 
+	printf("...ft_strchr\n");
+	not_found_strchr(0, 'a', i++);
+	printf("seeking present char\n");
+	while (i < tests)
+		found_strchr(100, rand_char(), i++);
+	i = 0;
+	printf("seeking missing char\n");
+	while (i < tests)
+		not_found_strchr(100, '\t', i++);
+	i = 0;
+	printf("seeking terminator\n");
+	while (i < tests)
+		not_found_strchr(100, '\0', i++);
 }
+
+static void	found_strrchr(size_t max_len, char seek, size_t i)
+{
+	size_t	len = randi(max_len);
+	size_t	hits = 3;
+	char	*str;
+
+	str = (char *) malloc(sizeof(char) * len + 1);
+	rand_str(str, len);
+	while (hits > 0)
+	{
+		str[randi(len)] = seek;
+		hits--;
+	}
+	if (ft_strrchr(str, seek) != strrchr(str, seek))
+	{
+		printf("test #%zu failed (c=%c)\n", i, seek);
+		printf("str: [%s]\nlibc:\t%p\nlibft:\t%p\n", str, strrchr(str, seek), ft_strrchr(str, seek));
+		abort();
+	}
+	free(str);
+}
+
+static void	not_found_strrchr(size_t max_len, char seek, size_t i)
+{
+	size_t	len = randi(max_len);
+	char	*str;
+
+	str = (char *) malloc(sizeof(char) * len + 1);
+	rand_str(str, len);
+	if (ft_strrchr(str, seek) != strrchr(str, seek))
+	{
+		printf("test #%zu failed\n", i);
+		printf("str: [%s]\nlibc:\t%p\nlibft:\t%p\n", str, strrchr(str, seek), ft_strrchr(str, seek));
+		abort();
+	}
+	free(str);
+}
+
 
 void	test_strrchr(void)
 {
+	size_t	tests = 100, i = 0;
 
+	printf("...ft_strrchr\n");
+	not_found_strrchr(0, 'a', i++);
+	printf("seeking present char\n");
+	while (i < tests)
+		found_strrchr(100, rand_char(), i++);
+	i = 0;
+	printf("seeking missing char\n");
+	while (i < tests)
+		not_found_strrchr(100, '\t', i++);
+	i = 0;
+	printf("seeking terminator\n");
+	while (i < tests)
+		not_found_strrchr(100, '\0', i++);
 }
 
 void	test_strstr(void)
@@ -433,19 +617,9 @@ void	test_strnstr(void)
 
 }
 
-static void	rand_substrs(char *str1, char *str2, size_t len_pre, size_t len_post)
-{
-	bzero(str1, len_pre + len_post + 1);
-	bzero(str2, len_pre + len_post + 1);
-	rand_str(str1, len_pre);
-	strncat(str2, str1, len_pre);
-	rand_str((str1 + len_pre), len_post);
-	rand_str((str2 + len_pre), len_post);
-}
-
 static void	strcmp_printout(char *str1, char *str2)
 {
-	printf("[%s] vs [%s]\ngot %d, should have been %d\nKO D:\n", str1, str2, 
+	printf("[%s] vs [%s]\ngot %d, expected %d\nKO D:\n", str1, str2, 
 			ft_strcmp(str1, str2), strcmp(str1, str2));
 }
 

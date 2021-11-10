@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/05 11:39:40 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/08 15:58:29 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/10 15:02:34 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 char	rand_char(void)
 {
 	char c = (char) (arc4random_uniform(128));
-	while (!isalnum(c))
+	while (!isprint(c))
 		c = (char) (arc4random_uniform(128));
 	return (c);
 }
@@ -30,14 +30,26 @@ char	*rand_str(char *str, size_t len)
 	return (str);
 }
 
-char	*rrand_str(char *str, size_t max_len)
+void	rand_substrs(char *str1, char *str2, size_t len_pre, size_t len_post)
 {
-	size_t	len = (arc4random_uniform(max_len));
-
-	return (rand_str(str, len));
+	bzero(str1, len_pre + len_post + 1);
+	bzero(str2, len_pre + len_post + 1);
+	rand_str(str1, len_pre);
+	strncat(str2, str1, len_pre);
+	rand_str((str1 + len_pre), len_post);
+	rand_str((str2 + len_pre), len_post);
 }
 
 size_t	randi(size_t max)
 {
 	return (arc4random_uniform(max));
+}
+
+void	print_mem(void *ptr, size_t size)
+{
+	while (size > 0)
+	{
+		printf("%c", *(char *)ptr++);
+		size--;
+	}
 }
