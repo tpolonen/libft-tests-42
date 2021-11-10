@@ -6,21 +6,27 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/30 18:49:43 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/09 22:15:14 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/10 11:58:19 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef TESTS_H
 # define TESTS_H
 # define FPATH ".test"
+# define NULLCHECK 1
 # include <sys/errno.h>
 # include <assert.h>
-# include <bsd/stdlib.h>
 # include <stdio.h>
 # include <time.h>
 # include <ctype.h>
 # include <limits.h>
-# include <bsd/string.h>
+# ifdef LINUX
+#  include <bsd/string.h>
+#  include <bsd/stdlib.h>
+# else
+#  include <string.h>
+#  include <stdlib.h>
+# endif
 
 /* Utility functions */
 char	rand_char(void);
