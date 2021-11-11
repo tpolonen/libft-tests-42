@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/04 19:31:23 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/10 18:51:02 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/11 20:18:13 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,12 +78,55 @@ void	test_memcpy(void)
 	assert(memcmp(str1, str2, sizeof(char) * len + 2) == 0);
 }
 
-void	test_memccpy(void)
+static void	rand_memccpy(size_t max_len, size_t i, char c)
 {
-	printf("...ft_memccpy\n");
+	void	*src, *ptr1, *ptr2;
+	size_t	len = randi(max_len);
+
+	src = malloc(len);
+	ptr1 = malloc(len);
+	ptr2 = malloc(len);
+	memset(src, rand_char(), len);
+	if (isprint(c))
+		memset(src + randi(len), c, 1);
+	bzero(ptr1, len);
+	bzero(ptr2, len);
+	memccpy(ptr1, src, c, len);
+	ft_memccpy(ptr2, src, c, len);
+	if (memcmp(ptr1, ptr2, len) != 0)
+	{
+		printf("test #%zu failed ", i);
+		if (isprint(c)) printf("(c=%c)", c);
+		printf("\nsrc\t[");
+		print_mem(src, len);
+		printf("]\nlibc\t[");
+		print_mem(ptr1, len);
+		printf("]\nlibft\t[");
+		print_mem(ptr2, len);
+		printf("]\n");
+		abort();
+	}
+	free(src);
+	free(ptr1);
+	free(ptr2);
 }
 
-static void	const_test_memmove(int i)
+void	test_memccpy(void)
+{
+	size_t	tests = 100, i = 0;
+
+	printf("...ft_memccpy\n");
+	rand_memccpy(0, i++, '\n');
+	printf("copying with present char\n");
+	while (i < tests)
+		rand_memccpy(100, i++, rand_char());
+	i = 0;
+	printf("copying with missing char\n");
+	while (i < tests)
+		rand_memccpy(100, i++, '\n');
+}
+
+static void	const_memmove(int i)
 {
 	char	str1[] = "meaning of life is fortytwo and here's more chars for string";
 	char	str2[] = "meaning of life is fortytwo and here's more chars for string";
@@ -126,7 +169,7 @@ void	test_memmove(void)
 		printf("OK\n");
 	#endif
 	while (i < tests)
-		const_test_memmove(i++);
+		const_memmove(i++);
 	i = 0;
 }
 
@@ -615,14 +658,123 @@ void	test_strrchr(void)
 		not_found_strrchr(100, '\0', i++);
 }
 
+static void	found_strstr(size_t max_haystack, size_t i)
+{
+	size_t	haystack_len = randi(max_haystack);
+	size_t	needle_len = randi(haystack_len);
+	char	*haystack, *needle;
+
+	haystack = (char *) malloc(sizeof(char) * (haystack_len + 1));
+	needle = (char *) malloc(sizeof(char) * (needle_len + 1));
+	rand_str(haystack, haystack_len);
+	rand_str(needle, needle_len);
+	memcpy(haystack + (randi(haystack_len - needle_len)), needle, needle_len);
+	if (ft_strstr(haystack, needle) != strstr(haystack, needle))
+	{
+		printf("test #%zu failed\nhystck:\t[%s]\nneedle:\t[%s]\n",
+				i, haystack, needle);
+		printf("libc:\t%p\nlibft:\t%p\n", strstr(haystack, needle),
+				ft_strstr(haystack, needle));
+		abort();
+	}
+	free(haystack);
+	free(needle);
+}
+
+static void	not_found_strstr(size_t max_haystack, size_t i)
+{
+	size_t	haystack_len = randi(max_haystack);
+	size_t	needle_len = randi(haystack_len);
+	char	*haystack, *needle;
+
+	haystack = (char *) malloc(sizeof(char) * (haystack_len + 1));
+	needle = (char *) malloc(sizeof(char) * (needle_len + 1));
+	rand_str(haystack, haystack_len);
+	rand_str(needle, needle_len);
+	if (ft_strstr(haystack, needle) != strstr(haystack, needle))
+	{
+		printf("test #%zu failed\nhystck:\t[%s]\nneedle:\t[%s]\n",
+				i, haystack, needle);
+		printf("libc:\t%p\nlibft:\t%p\n", strstr(haystack, needle),
+				ft_strstr(haystack, needle));
+		abort();
+	}
+	free(haystack);
+	free(needle);
+}
+
 void	test_strstr(void)
 {
+	size_t	tests = 100, i = 0;
+	printf("...ft_strstr\n");
+	found_strstr(0, i++);
+	printf("seeking present needle\n");
+	while (i < tests)
+		found_strstr(30, i++);
+	i = 0;
+	printf("seeking missing needle\n");
+	while (i < tests)
+		not_found_strstr(50, i++);
 
+}
+
+static void	found_strnstr(size_t max_haystack, size_t needle_len, size_t i)
+{
+	size_t	haystack_len = needle_len + randi(max_haystack - needle_len);
+	size_t	len = haystack_len/2 + randi(haystack_len/2 + 1);
+	char	*haystack, *needle;
+
+	haystack = (char *) malloc(sizeof(char) * (haystack_len + 1));
+	needle = (char *) malloc(sizeof(char) * (needle_len + 1));
+	rand_str(haystack, haystack_len);
+	rand_str(needle, needle_len);
+	memcpy(haystack + (randi(haystack_len - needle_len)), needle, needle_len);
+	if (ft_strnstr(haystack, needle, len) != strnstr(haystack, needle, len))
+	{
+		printf("test #%zu failed (len=%zu)\nhystck:\t[%s]\nneedle:\t[%s]\n",
+				i, len, haystack, needle);
+		printf("libc:\t%p\nlibft:\t%p\n", strnstr(haystack, needle, len),
+				ft_strnstr(haystack, needle, len));
+		abort();
+	}
+	free(haystack);
+	free(needle);
+}
+
+static void	not_found_strnstr(size_t max_haystack, size_t needle_len, size_t i)
+{
+	size_t	haystack_len = needle_len + randi(max_haystack - needle_len);
+	size_t	len = haystack_len/2 + randi(haystack_len/2 + 1);
+	char	*haystack, *needle;
+
+	haystack = (char *) malloc(sizeof(char) * (haystack_len + 1));
+	needle = (char *) malloc(sizeof(char) * (needle_len + 1));
+	rand_str(haystack, haystack_len);
+	rand_str(needle, needle_len);
+	if (ft_strnstr(haystack, needle, len) != strnstr(haystack, needle, len))
+	{
+		printf("test #%zu failed (len=%zu)\nhystck:\t[%s]\nneedle:\t[%s]\n",
+				i, len, haystack, needle);
+		printf("libc:\t%p\nlibft:\t%p\n", strnstr(haystack, needle, len),
+				ft_strnstr(haystack, needle, len));
+		abort();
+	}
+	free(haystack);
+	free(needle);
 }
 
 void	test_strnstr(void)
 {
-
+	size_t	tests = 100, i = 0;
+	printf("...ft_strnstr\n");
+	found_strnstr(0, 0, i++);
+	printf("seeking present needle\n");
+	while (i < tests)
+		found_strnstr(40, 8, i++);
+	i = 0;
+	printf("seeking missing needle\n");
+	while (i < tests)
+		not_found_strnstr(50, 15, i++);
 }
 
 static void	strcmp_printout(char *str1, char *str2)
@@ -830,9 +982,103 @@ void	test_strncmp(void)
 	}
 }
 
+void	valid_atoi(size_t max_spaces, size_t i)
+{
+	size_t	spaces = randi(max_spaces) + 1;
+	char	*str, *s1;
+	int		n = randi(INT_MAX);
+
+	str = (char *) malloc(sizeof(char) * (spaces + 12));
+	s1 = str;
+	while (spaces)
+	{
+		if (randi(2))
+			*s1++ = (char) (randi(5) + 9);
+		else
+			*s1++ = ' ';
+		spaces--;
+	}
+	if (randi(10) > 6)
+	{
+		if (randi(2))
+			*s1++ = '-';
+		else
+			*s1++ = '+';
+	}
+	sprintf(s1, "%d", n);
+	*(s1 + randi(strlen(s1))) = rand_char();
+	if (ft_atoi(str) != atoi(str))
+	{
+		printf("test #%zu failed\nstr: [%s]\ngot %d, expected %d\n", 
+				i, str, ft_atoi(str), atoi(str));
+		abort();
+	}
+	free(str);
+}
+
+void	bad_atoi(size_t max_spaces, size_t i)
+{
+	size_t	spaces = randi(max_spaces) + 1;
+	size_t	len = spaces + 20;
+	char	*str, *s1;
+	int		n = randi(INT_MAX);
+
+	str = (char *) malloc(sizeof(char) * (len));
+	bzero(str, len);
+	s1 = str;
+	while (spaces > randi(4))
+	{
+		if (randi(3))
+			*s1++ = ' ';
+		else
+			*s1++ = (char) randi(14);
+		spaces--;
+	}
+	while (spaces > 0)
+	{
+		if (randi(2))
+			*s1++ = '-';
+		else
+			*s1++ = '+';
+		spaces--;
+	}
+	sprintf(s1, "%d", n);
+	while (randi(4))
+		*(str + randi(strlen(str))) = rand_char();
+	if (ft_atoi(str) != atoi(str))
+	{
+		printf("test #%zu failed\nstr: [%s]\ngot %d, expected %d\n", 
+				i, str, ft_atoi(str), atoi(str));
+		abort();
+	}
+	free(str);
+}
+
 void	test_atoi(void)
 {
+	size_t	tests = 100, max_spaces = 10, i = 0;
+	char	str1[] = " 42";
+	char	str2[] = " -42";
+	char	str3[] = " 0";
+	char	str4[] = " 2147483647";
+	char	str5[] = " -2147483648";
 
+	printf("...ft_atoi\n");
+	valid_atoi(10, 0);
+	printf("testing easy strings\n");
+	printf("%d\n%d\n%d\n%d\n%d\n", ft_atoi(str1), ft_atoi(str2), ft_atoi(str3), ft_atoi(str4), ft_atoi(str5));
+	assert(ft_atoi(str1) == atoi(str1));
+	assert(ft_atoi(str2) == atoi(str2));
+	assert(ft_atoi(str3) == atoi(str3));
+	assert(ft_atoi(str4) == atoi(str4));
+	assert(ft_atoi(str5) == atoi(str5));
+	printf("testing valid strings\n");
+	while (i < tests)
+		valid_atoi(max_spaces, i++);
+	printf("testing bad strings\n");
+	i = 0;
+	while (i < tests)
+		bad_atoi(max_spaces, i++);
 }
 
 static void	validate_chartest(int (*ft_func)(int), int (*lib_func)(int))
