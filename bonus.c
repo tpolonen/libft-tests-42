@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 10:56:10 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/12 15:16:23 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/12 17:53:05 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ static void	del_content(void *content, size_t size)
 {
 	if (content != NULL)
 	{
+		printf("deleting list content [%s]\n", (char *) content);
 		bzero(content, size);
 		free(content);
 	}
@@ -57,7 +58,7 @@ void	test_lstdel(void)
 	void	*tailcheck;
 	size_t	size = sizeof(char) * (strlen(str1) + 1);
 
-	printf("...lstdel\n");
+	printf("...ft_lstdel\n");
 	head = ft_lstnew(str1, size);
 	mid = ft_lstnew(str2, size);
 	tail = ft_lstnew(str3, size);
@@ -96,7 +97,7 @@ void	test_lstadd(void)
 	ft_lstdel(&top, &del_content);
 }
 
-static void	print_content(t_list *elem)
+static void	print_content_assert_lowercase(t_list *elem)
 {
 	if (elem->content != NULL)
 	{
@@ -111,17 +112,66 @@ void	test_lstiter(void)
 	char	str1[] = "fortyone", str2[] = "fortytwo", str3[] = "fortyfoo";
 	size_t	size = sizeof(char) * (strlen(str1) + 1);
 
-	printf("...lstiter\n");
+	printf("...ft_lstiter\n");
 	head = ft_lstnew(str1, size);
 	mid = ft_lstnew(str2, size);
 	tail = ft_lstnew(str3, size);
 	head->next = mid;
 	mid->next = tail;
-	ft_lstiter(head, &print_content);
+	ft_lstiter(head, &print_content_assert_lowercase);
 	ft_lstdel(&head, &del_content);
+}
+
+static void	print_content_assert_uppercase(t_list *elem)
+{
+	if (elem->content != NULL)
+	{
+		printf("[%s]\n", (char*)elem->content);
+		assert(*(char *)elem->content == 'F');
+	}
+}
+
+static t_list	*uppercase_content(t_list *elem)
+{
+	if (elem->content != NULL)
+	{
+		t_list	*new;
+		char	*new_content, *nc;
+		char	*oc = elem->content;
+		
+		new = (t_list *) malloc(sizeof(t_list));
+		new_content = (char *) malloc(sizeof(elem->content_size));
+		if (!new || !new_content)
+			return (NULL);
+		nc = new_content;
+		while (*oc)
+		{
+			*nc = toupper(*oc);
+			nc++;
+			oc++;
+		}
+		new->content = new_content;
+		new->content_size = elem->content_size;
+		new->next = NULL;
+		return (new);
+	}
+	else return (NULL);
 }
 
 void	test_lstmap(void)
 {
+	t_list	*head, *mid, *tail, *copy;
+	char	str1[] = "fortyone", str2[] = "fortytwo", str3[] = "fortyfoo";
+	size_t	size = sizeof(char) * (strlen(str1) + 1);
 
+	printf("...ft_lstmap\n");
+	head = ft_lstnew(str1, size);
+	mid = ft_lstnew(str2, size);
+	tail = ft_lstnew(str3, size);
+	head->next = mid;
+	mid->next = tail;
+	copy = ft_lstmap(head, &uppercase_content);
+	ft_lstiter(copy, &print_content_assert_uppercase);
+	ft_lstdel(&head, &del_content);
+	ft_lstdel(&copy, &del_content);
 }
