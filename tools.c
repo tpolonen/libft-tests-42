@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/05 11:39:40 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/10 16:54:15 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/12 15:55:18 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,17 @@ void	print_mem(void *ptr, size_t size)
 	{
 		printf("%c", *(char *)ptr++);
 		size--;
+	}
+}
+
+void	print_mem_val(void *ptr, size_t size)
+{
+	while (size > 0)
+	{
+		printf("%d", *(char *)ptr++);
+		size--;
+		if (size > 0)
+			printf(", ");
 	}
 }
 

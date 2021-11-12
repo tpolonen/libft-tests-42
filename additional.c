@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 18:36:42 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/12 11:50:33 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/12 15:54:39 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,19 +42,17 @@ void	test_memdel(void)
 
 void	test_strnew(void)
 {
-	char	*str;
-	size_t	size, i;
+	char *str0 = "fortytwo";
+	char *str1;
 
 	printf("...ft_strnew\n");
-	size = 8;
-	str = ft_strnew(sizeof(char) * size);
-	i = 0;
-	while (i < size)
-	{
-		assert(str[i] == '\0');
-		i++;
-	}
-	free(str);
+	str1 = ft_strnew(strlen(str0));
+	printf("before strcpy:\t{");
+	print_mem_val(str1, strlen(str0) + 1);
+	printf("}\nafter strcpy:\t[");
+	strcpy(str1, str0);
+	printf("%s]\n", str1);
+	free(str1);
 }
 
 void	test_strdel(void)
