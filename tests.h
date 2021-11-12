@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/30 18:49:43 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/10 18:52:53 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/12 11:21:11 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,5 +94,11 @@ void	test_putendl_fd(void);
 void	test_putnbr_fd(void);
 
 /* Bonus Mode */
+void	test_lstnew(void);
+void	test_lstdelone(void);
+void	test_lstdel(void);
+void	test_lstadd(void);
+void	test_lstiter(void);
+void	test_lstmap(void);
 
 #endif
