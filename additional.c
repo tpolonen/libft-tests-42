@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 18:36:42 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/09 17:13:07 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/12 11:50:33 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ void	test_strnew(void)
 		assert(str[i] == '\0');
 		i++;
 	}
+	free(str);
 }
 
 void	test_strdel(void)
@@ -254,6 +255,8 @@ static void validate_full_split(char const *s, char c, char const **expected)
 	}
 	printf("[%s] vs [%s]\n", words[i], expected[i]);
 	assert(strcmp(words[i], expected[i]) == 0);	
+	free_str_arr(words);
+	free(words);
 }
 
 
@@ -280,11 +283,14 @@ void	test_strsplit(void)
 static void	validate_itoa(int n)
 {
 	char	itoa[30];
+	char*	result;
 
 	sprintf(itoa, "%d", n);
+	result = ft_itoa(n);
 	printf("expecting [%s], got ", itoa);
-	printf("[%s]\n", ft_itoa(n));
-	assert(strcmp(ft_itoa(n), itoa) == 0);
+	printf("[%s]\n", result);
+	assert(strcmp(result, itoa) == 0);
+	free(result);
 }
 
 void	test_itoa(void)
