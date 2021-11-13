@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 10:56:10 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/12 17:53:05 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/13 15:38:08 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,15 +133,23 @@ static void	print_content_assert_uppercase(t_list *elem)
 
 static t_list	*uppercase_content(t_list *elem)
 {
+	t_list	*new;
+
+	new = (t_list *) malloc(sizeof(t_list));
+	if (!new)
+		return (NULL);
+
+	new->next = NULL;
+	new->content_size = elem->content_size;
+
 	if (elem->content != NULL)
 	{
-		t_list	*new;
 		char	*new_content, *nc;
-		char	*oc = elem->content;
+		char	*oc = (char *) elem->content;
 		
-		new = (t_list *) malloc(sizeof(t_list));
-		new_content = (char *) malloc(sizeof(elem->content_size));
-		if (!new || !new_content)
+		new_content = (char *) malloc(elem->content_size);
+		bzero(new_content, elem->content_size);
+		if (!new_content)
 			return (NULL);
 		nc = new_content;
 		while (*oc)
@@ -151,8 +159,6 @@ static t_list	*uppercase_content(t_list *elem)
 			oc++;
 		}
 		new->content = new_content;
-		new->content_size = elem->content_size;
-		new->next = NULL;
 		return (new);
 	}
 	else return (NULL);
