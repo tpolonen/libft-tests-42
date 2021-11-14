@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/04 19:31:23 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/11 20:18:13 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/14 15:57:50 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,6 @@ void	test_memset(void)
 	char	c = rand_char();
 
 	printf("...ft_memset\n");
-	#ifdef NULLCHECK
-		memset(NULL, c, (0));
-		printf("nullcheck ");
-		ft_memset(NULL, c, (0));
-		printf("OK\n");
-	#endif
 	ptr1 = (char *) malloc(sizeof(char) * 9);
 	ptr2 = (char *) malloc(sizeof(char) * 9);
 	bzero(ptr1, 9);
@@ -45,12 +39,6 @@ void	test_bzero(void)
 	size_t 	len = strlen(str1);
 
 	printf("...ft_bzero\n");
-	#ifdef NULLCHECK
-		bzero(NULL, (0));
-		printf("nullcheck ");
-		ft_bzero(NULL, (0));
-		printf("OK\n");
-	#endif
 	ft_bzero(str1, len);
 	bzero(str2, len);
 	assert(memcmp(str1, str2, sizeof(char) * len) == 0);
@@ -63,20 +51,28 @@ void	test_memcpy(void)
 	size_t 	len = 8;
 
 	printf("...ft_memcpy\n");
-	#ifdef NULLCHECK
-		memcpy(NULL, str1, 0);
-		memcpy(str2, NULL, 0);
-		memcpy(NULL, NULL, len);
-		printf("nullcheck ");
-		ft_memcpy(NULL, str1, 0);
-		ft_memcpy(str2, NULL, 0);
-		ft_memcpy(NULL, NULL, len);
-		printf("OK\n");
-	#endif
 	ft_memcpy(str2, str1, len);
 	printf("[%s]\n", str2);
 	assert(memcmp(str1, str2, sizeof(char) * len + 2) == 0);
 }
+
+static void	basic_memccpy(void)
+{
+	char	str[] = "meaning of life is fortytwo";
+	char	buf[30];
+	char	*ptr1, *ptr2;
+
+	bzero(buf, 30);
+	ptr1 = memccpy(buf, str, 'i', 20);
+	ptr2 = ft_memccpy(buf, str, 'i', 20);
+	if (ptr1 != ptr2)
+	{
+		printf("ft_memccpy returned wrong pointer: expected %p, got %p\n", ptr1, ptr2);
+		printf("src:\t[%s], c='i'\nmemccpy:\t[%s]\nft_memccpy:\t[%s]\n", str, ptr1, ptr2);
+		abort();
+	}
+}
+
 
 static void	rand_memccpy(size_t max_len, size_t i, char c)
 {
@@ -116,6 +112,7 @@ void	test_memccpy(void)
 	size_t	tests = 100, i = 0;
 
 	printf("...ft_memccpy\n");
+	basic_memccpy();
 	rand_memccpy(0, i++, '\n');
 	printf("copying with present char\n");
 	while (i < tests)
@@ -157,17 +154,6 @@ void	test_memmove(void)
 	int		i = 0;
 
 	printf("...ft_memmove\n");
-	#ifdef NULLCHECK
-		char nullcheck[] = "fortytwo";
-		memmove(NULL, NULL, 1);
-		memmove(NULL, nullcheck, 0);
-		memmove(nullcheck, NULL, 0);
-		printf("nullcheck ");
-		ft_memmove(NULL, NULL, 1);
-		ft_memmove(NULL, nullcheck, 0);
-		ft_memmove(nullcheck, NULL, 0);
-		printf("OK\n");
-	#endif
 	while (i < tests)
 		const_memmove(i++);
 	i = 0;
@@ -324,13 +310,6 @@ void	test_strlen(void)
 	size_t	max_len = 1000;
 
 	printf("...ft_strlen\n");
-/* 
- * These tests were removed because libbsd's strlen(NULL) will cause segfault.
- * However, consider adding check to your ft_strlen.
- * 
- * strlen(NULL);
- * ft_strlen(NULL);
- */
 	rand_strlen(0, i++);
 	while (i < tests)
 		rand_strlen(max_len, i++);
@@ -552,11 +531,16 @@ void	test_strlcat(void)
 static void	found_strchr(size_t max_len, char seek, size_t i)
 {
 	size_t	len = randi(max_len);
+	size_t	hits = 3;
 	char	*str;
 
 	str = (char *) malloc(sizeof(char) * len + 1);
 	rand_str(str, len);
-	str[randi(len)] = seek;
+	while (hits > 0)
+	{
+		str[randi(len)] = seek;
+		hits--;
+	}
 	if (ft_strchr(str, seek) != strchr(str, seek))
 	{
 		printf("test #%zu failed (c=%c)\n", i, seek);
