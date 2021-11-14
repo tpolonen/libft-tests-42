@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/03 13:48:14 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/04 19:34:05 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/14 18:27:34 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,15 +96,20 @@ void	test_putnbr(void)
 	int	n1 = 42;
 	int	n2 = -42;
 	int	n3 = 0;
-	int n4 = -2147483647;
-	int	n5 = 2147483647;
+	int n4 = INT_MIN;
+	int	n5 = INT_MAX;
+	char	buf[30];
 
 	printf("...ft_putnbr\n");
 	validate_putnbr(n1, "42");
 	validate_putnbr(n2, "-42");
 	validate_putnbr(n3, "0");
-	validate_putnbr(n4, "-2147483647");
-	validate_putnbr(n5, "2147483647");
+	bzero(buf, 30);
+	sprintf(buf, "%d", INT_MIN);
+	validate_putnbr(n4, buf);
+	bzero(buf, 30);
+	sprintf(buf, "%d", INT_MAX);
+	validate_putnbr(n5, buf);
 }
 
 void	test_putchar_fd(void)
