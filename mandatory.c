@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/04 19:31:23 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/14 15:57:50 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/14 18:08:42 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -401,6 +401,23 @@ void	test_strncpy(void)
 		rand_strncpy(100, i++);
 }
 
+static void	null_strcat(void)
+{
+	char	src1[] = "hello ";
+	char	src2[] = "world!";
+	char	buf[30];
+
+	memset(buf, 'a', 30);
+	memcpy(buf, src1, sizeof(char) * (strlen(src1) + 1));
+	ft_strcat(buf, src2);
+	if (strcmp("hello world!", buf) != 0)
+	{
+		printf("test failed: doesn't add null byte\n[%s] + [%s]\nresult: [%s]\n", 
+		src1, src2, buf);
+		abort();
+	}
+}
+
 static void	rand_strcat(size_t max_len, size_t i)
 {
 	char	*str1, *str2, *ft_cat, *libc_cat;
@@ -438,9 +455,27 @@ void	test_strcat(void)
 	size_t	tests = 100, i = 0;
 
 	printf("...ft_strcat\n");
+	null_strcat();
 	rand_strcat(0, i++);
 	while (i < tests)
 		rand_strcat(50, i++);
+}
+
+static void	null_strncat(void)
+{
+	char	src1[] = "hello ";
+	char	src2[] = "world!!!";
+	char	buf[30];
+
+	memset(buf, 'a', 30);
+	memcpy(buf, src1, sizeof(char) * (strlen(src1) + 1));
+	ft_strncat(buf, src2, sizeof(char) * 6);
+	if (strcmp("hello world!", buf) != 0)
+	{
+		printf("test failed: doesn't add null byte\n[%s] + [%s] (n=6)\nresult: [%s]\n", 
+		src1, src2, buf);
+		abort();
+	}
 }
 
 static void	rand_strncat(size_t max_len, size_t i)
@@ -481,6 +516,7 @@ void	test_strncat(void)
 	size_t	tests = 100, i = 0;
 
 	printf("...ft_strncat\n");
+	null_strncat();
 	rand_strncat(0, i++);
 	while (i < tests)
 		rand_strncat(50, i++);
