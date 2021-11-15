@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/04 19:31:23 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/15 15:56:53 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/15 16:54:21 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -344,12 +344,13 @@ void	test_strdup(void)
 
 static void	rand_strcpy(size_t max_len, size_t i)
 {
+	size_t	buf_extra = 5;
 	size_t	len = randi(max_len);
 	char	*str, *cpy;
 
 	str = (char *) malloc(sizeof(char) * (len + 1));
-	cpy = (char *) malloc(sizeof(char) * (len + 1));
-	bzero(cpy, len + 1);
+	cpy = (char *) malloc(sizeof(char) * (len + buf_extra + 1));
+	memset(cpy, 'a', len + buf_extra + 1);
 	rand_str(str, len);
 	ft_strcpy(cpy, str);
 	if (strcmp(str, cpy) != 0)
@@ -374,13 +375,14 @@ void	test_strcpy(void)
 static void	rand_strncpy(size_t max_len, size_t i)
 {
 	size_t	len = randi(max_len);
+	size_t	buf_extra = 5;
 	size_t	n = randi(len + 1);
 	char	*str, *cpy;
 
 	str = (char *) malloc(sizeof(char) * (len + 1));
-	cpy = (char *) malloc(sizeof(char) * (len + 1));
+	cpy = (char *) malloc(sizeof(char) * (len + buf_extra + 1));
+	memset(cpy, 'b', len + buf_extra + 1);
 	rand_str(str, len);
-	bzero(cpy, len + 1);
 	ft_strncpy(cpy, str, n);
 	if (memcmp(str, cpy, n) != 0)
 	{
@@ -391,11 +393,27 @@ static void	rand_strncpy(size_t max_len, size_t i)
 	free(cpy);
 }
 
+static void	smaller_src_strncpy(void)
+{
+	char	str0[] = "fortytwo";
+	char	cpy[30];
+
+	memset(cpy, 'c', 30);
+	ft_strncpy(cpy, str0, 20);
+	if (memcmp(str0, cpy, strlen(str0)) != 0 || cpy[15] != '\0')
+	{
+		printf("failed when src is smaller than dest\nsrc:\t[%s]\ndst:\t[%s]\n", str0, cpy);
+		printf("dst[15]=%c (%d)\n", cpy[15], cpy[15]);
+		abort();
+	}
+}
+
 void	test_strncpy(void)
 {
 	size_t	tests = 100, i = 0;
 
 	printf("...ft_strncpy\n");
+	smaller_src_strncpy();
 	rand_strncpy(0, i++);
 	while (i < tests)
 		rand_strncpy(100, i++);
