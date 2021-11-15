@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 18:36:42 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/14 18:42:16 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/15 12:54:56 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,6 +206,7 @@ void	test_strtrim(void)
 	char const	s2[] = "forty \t\n two \t\n";
 	char const	s3[] = "\t\n forty \t\n two";
 	char const	s4[] = "fortytwo";
+	char const	s5[] = "        f              ";
 	char		*str;
 
 	printf("...ft_strtrim\n");
@@ -228,6 +229,12 @@ void	test_strtrim(void)
 	str = ft_strtrim(s4);
 	printf("[%s]\n", str);
 	assert(strcmp("fortytwo", str) == 0);
+	free(str);
+	str = ft_strtrim(s5);
+	printf("[%s]\n", str);
+	assert(strcmp("f", str) == 0);
+	free(str);
+
 }
 
 static void	free_str_arr(char **str_arr)
