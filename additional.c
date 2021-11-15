@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 18:36:42 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/15 12:54:56 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/15 18:47:09 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -283,6 +283,7 @@ void	test_strsplit(void)
 	char const	s5[] = "";
 
 	char const *full_s1[] = { "The", "ships", "hung", "in", "the", "sky", "in", "much", "the", "same", "way", "that", "bricks", "don't.", "\0" };
+	char const *full_s3[] = { "Don't", " ", "Panic", "!", "\0" };
 
 	printf("...ft_strsplit\n");
 	validate_split(s1, ' ', 7, "much");
@@ -292,6 +293,7 @@ void	test_strsplit(void)
 	validate_split(s4, '\a', 1, "\0");
 	validate_split(s5, '\n', 0, "\0");
 	validate_full_split(s1, ' ', full_s1);
+	validate_full_split(s3, '/', full_s3);
 }
 
 static void	validate_itoa(int n)

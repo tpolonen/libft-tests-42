@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 10:56:10 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/13 15:38:08 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/15 18:41:28 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ static void	del_content(void *content, size_t size)
 		bzero(content, size);
 		free(content);
 	}
+	else printf("deleting list with no content\n");
 }
 
 void	test_lstnew(void)
@@ -32,7 +33,12 @@ void	test_lstnew(void)
 	printf("...ft_lstnew\n");
 	list = ft_lstnew(str, size);
 	printf("list->content: [%s]\n", list->content);
+	assert(list->content_size == size);
 	del_content(list->content, size);
+	free(list);
+	list = ft_lstnew(NULL, 42);
+	assert(list->content_size == 0);
+	del_content(list->content, 42);
 	free(list);
 }
 
@@ -91,7 +97,8 @@ void	test_lstadd(void)
 	head->next = mid;
 	mid->next = tail;
 	ft_lstadd(&head, top);
-	assert(top->next == head);
+	assert(top = head);
+	assert(strcmp(str1, (char *) top->next->content) == 0);
 	assert(top->next->next == mid);
 	assert(top->next->next->next == tail);
 	ft_lstdel(&top, &del_content);
@@ -150,7 +157,10 @@ static t_list	*uppercase_content(t_list *elem)
 		new_content = (char *) malloc(elem->content_size);
 		bzero(new_content, elem->content_size);
 		if (!new_content)
+		{
+			free(new);
 			return (NULL);
+		}
 		nc = new_content;
 		while (*oc)
 		{

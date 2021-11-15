@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/04 19:31:23 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/15 16:54:21 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/15 17:53:36 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1147,6 +1147,7 @@ void	test_atoi(void)
 	char	str3[] = " 0";
 	char	str4[] = " 2147483647";
 	char	str5[] = " -2147483648";
+	char	str6[] = "5464999935399999999";
 
 	printf("...ft_atoi\n");
 	valid_atoi(10, 0);
@@ -1164,6 +1165,7 @@ void	test_atoi(void)
 	i = 0;
 	while (i < tests)
 		bad_atoi(max_spaces, i++);
+	printf("final challenge\nstr6:[%s]\natoi:\t%d\nft_atoi\t%d\n", str6, atoi(str6), ft_atoi(str6));
 }
 
 static void	validate_chartest(int (*ft_func)(int), int (*lib_func)(int))
