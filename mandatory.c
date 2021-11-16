@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/04 19:31:23 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/15 17:53:36 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/16 15:52:52 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -803,6 +803,20 @@ void	test_strstr(void)
 
 }
 
+void	too_short_strnstr(void)
+{
+	char	s1[] = "12345needle23456";
+	char	s2[] = "needle";
+	char	*p1 = strnstr(s1, s2, 7), *p2 = ft_strnstr(s1, s2, 7);
+
+	if (p1 != p2)
+	{
+		printf("failed when needle is not fully covered by len\n");
+		printf("s1=[%s]\nlibc:\t%p\nlibft\t%p\n", s1, p1, p2);
+		abort();
+	}
+}
+
 static void	found_strnstr(size_t max_haystack, size_t needle_len, size_t i)
 {
 	size_t	haystack_len = needle_len + randi(max_haystack - needle_len);
@@ -852,6 +866,7 @@ void	test_strnstr(void)
 {
 	size_t	tests = 100, i = 0;
 	printf("...ft_strnstr\n");
+	too_short_strnstr();
 	found_strnstr(0, 0, i++);
 	printf("seeking present needle\n");
 	while (i < tests)

@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 18:36:42 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/15 18:47:09 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/16 19:16:40 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -237,42 +237,42 @@ void	test_strtrim(void)
 
 }
 
-static void	free_str_arr(char **str_arr)
+static void	free_str_tab(char ***tab, size_t count)
 {
-	while (**str_arr)
-		free(*str_arr++);
-	free(*str_arr);
+	char	**t1 = *tab;
+
+	while (count > 0)
+	{
+		free(*t1++);
+		count--;
+	}
+	free(*tab);
 }
 
-static void	validate_split(char const *s, char c, size_t i, char const *expected)
+static void	validate_split(char const *s, char c, size_t i, char const *expected, size_t count)
 {
-	char	**words;
+	char	**tab;
 
-	words = ft_strsplit(s, c);
-	printf("[%s]\n", words[i]);
-	assert(strcmp(words[i], expected) == 0);
-	free_str_arr(words);
-	free(words);
+	tab = ft_strsplit(s, c);
+	printf("[%s]\n", tab[i]);
+	assert(strcmp(tab[i], expected) == 0);
+	free_str_tab(&tab, count);
 }
 
-static void validate_full_split(char const *s, char c, char const **expected)
+static void validate_full_split(char const *s, char c, char const **expected, size_t count)
 {
 	char	**words;
-	int	i = 0;
+	size_t	i = 0;
 
 	words = ft_strsplit(s, c);
-	while (words[i][0])
+	while (i < count)
 	{
 		printf("[%s] vs [%s]\n", words[i], expected[i]);
 		assert(strcmp(words[i], expected[i]) == 0);
 		i++;
 	}
-	printf("[%s] vs [%s]\n", words[i], expected[i]);
-	assert(strcmp(words[i], expected[i]) == 0);	
-	free_str_arr(words);
-	free(words);
+	free_str_tab(&words, count);
 }
-
 
 void	test_strsplit(void)
 {
@@ -281,19 +281,20 @@ void	test_strsplit(void)
 	char const	s3[] = "//////////Don't/////////// ////////////Panic////////!////";
 	char const	s4[] = "fortytwo";
 	char const	s5[] = "";
+	char const	s6[] = "-----------------------------------";
 
-	char const *full_s1[] = { "The", "ships", "hung", "in", "the", "sky", "in", "much", "the", "same", "way", "that", "bricks", "don't.", "\0" };
-	char const *full_s3[] = { "Don't", " ", "Panic", "!", "\0" };
+	char const *full_s1[] = { "The", "ships", "hung", "in", "the", "sky", "in", "much", "the", "same", "way", "that", "bricks", "don't." };
+	char const *full_s3[] = { "Don't", " ", "Panic", "!" };
 
 	printf("...ft_strsplit\n");
-	validate_split(s1, ' ', 7, "much");
-	validate_split(s2, '.', 1, " Lunchtime doubly so");
-	validate_split(s3, '/', 3, "!");
-	validate_split(s4, '\t', 0, "fortytwo");
-	validate_split(s4, '\a', 1, "\0");
-	validate_split(s5, '\n', 0, "\0");
-	validate_full_split(s1, ' ', full_s1);
-	validate_full_split(s3, '/', full_s3);
+	validate_full_split(s1, ' ', full_s1, 14);
+	validate_full_split(s3, '/', full_s3, 4);
+	validate_split(s1, ' ', 7, "much", 14);
+	validate_split(s2, '.', 1, " Lunchtime doubly so", 2);
+	validate_split(s3, '/', 3, "!", 4);
+	validate_split(s4, '\t', 0, "fortytwo", 1);
+	validate_split(s5, '\n', 0, "\0", 1);
+	validate_split(s6, '-', 0, "\0", 1);
 }
 
 static void	validate_itoa(int n)
