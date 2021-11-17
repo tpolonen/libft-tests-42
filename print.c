@@ -6,12 +6,16 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/03 13:48:14 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/14 18:27:34 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/17 15:29:19 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include "tests.h"
+#include <sys/types.h>
+#include <sys/uio.h>
+#include <unistd.h>
+#include <fcntl.h>
 
 void	test_putchar(void)
 {
@@ -114,21 +118,101 @@ void	test_putnbr(void)
 
 void	test_putchar_fd(void)
 {
-	
+	char	buf;
+	int 	fd = open(FPATH, O_WRONLY | O_CREAT, 0666);
+		
+	printf("...ft_putchar_fd\n");
+	if (fd != -1)
+	{
+		ft_putchar_fd('!', fd);
+		close(fd);
+		fd = open(FPATH, O_RDONLY);
+		read(fd, &buf, 1);
+		close(fd);
+		printf("[%c]\n", buf);
+		assert(buf == '!');
+		remove(FPATH);
+	}
+	else printf("opening fd failed\n");
 }
 
 void	test_putstr_fd(void)
 {
-	
+	char	buf[300];
+	char	str[] = "The ships hung in the sky in much the same way that bricks don't.";
+	int		fd = open(FPATH, O_WRONLY | O_CREAT, 0666);
+
+	printf("...ft_putstr_fd\n");
+	bzero(buf, 300);
+	if (fd != -1)
+	{
+		ft_putstr_fd(str, fd);
+		close(fd);
+		fd = open(FPATH, O_RDONLY);
+		read(fd, buf, strlen(str));
+		close(fd);
+		printf("[%s]\n", buf);
+		assert(strcmp(buf, str) == 0);
+		remove(FPATH);
+	}
+	else printf("opening fd failed\n");
 }
 
 void	test_putendl_fd(void)
 {
-	
+	char	buf[42];
+	char	str[] = "Don't Panic!";
+	size_t	len = strlen(str);
+	int		fd = open(FPATH, O_WRONLY | O_CREAT, 0666);
+
+	printf("...ft_putendl_fd\n");
+	bzero(buf, 42);
+	if (fd != -1)
+	{
+		ft_putendl_fd(str, fd);
+		close(fd);
+		fd = open(FPATH, O_RDONLY);
+		read(fd, buf, len + 1);
+		close(fd);
+		printf("[%s]\n", buf);
+		assert(strncmp(buf, str, len) == 0);
+		assert(buf[len] == '\n');
+		remove(FPATH);
+	}
+	else printf("opening fd failed\n");
+}
+
+static void	validate_putnbr_fd(int n)
+{
+	char	buf[30];
+	char	verif[30];
+	size_t	len;
+
+	bzero(buf, 30);
+	bzero(verif, 30);
+	len = sprintf(verif, "%d", n);
+	int fd = open(FPATH, O_WRONLY | O_CREAT, 0666);
+	if (fd == -1)
+	{
+		printf("opening fd failed\n");
+		return ;
+	}
+	ft_putnbr_fd(n, fd);
+	close(fd);
+	fd = open(FPATH, O_RDONLY);
+	read(fd, buf, len);
+	close(fd);
+	printf("[%s]\n", buf);
+	assert(strcmp(buf, verif) == 0);
+	remove(FPATH);
 }
 
 void	test_putnbr_fd(void)
 {
-
+	printf("...ft_putnbr_fd\n");
+	validate_putnbr_fd(42);
+	validate_putnbr_fd(-42);
+	validate_putnbr_fd(0);
+	validate_putnbr_fd(INT_MIN);
+	validate_putnbr_fd(INT_MAX);
 }
-
