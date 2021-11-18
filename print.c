@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/03 13:48:14 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/17 15:29:19 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/18 14:29:48 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,14 +80,14 @@ void	test_putendl(void)
 static void	validate_putnbr(int n, char const *expected)
 {
 	FILE	*fd;
-	char	buf[12];
+	char	buf[13];
 
-	bzero(buf, 12);
+	bzero(buf, 13);
 	fd = freopen(FPATH, "w", stdout);
 	ft_putnbr(n);
 	fclose(fd);
 	fd = fopen(FPATH, "r");
-	fread(buf, 12, 1, fd);
+	fread(buf, 13, 1, fd);
 	fclose(fd);
 	freopen("/dev/tty", "w", stdout);
 	printf("[%s]\n", buf);
@@ -114,6 +114,18 @@ void	test_putnbr(void)
 	bzero(buf, 30);
 	sprintf(buf, "%d", INT_MAX);
 	validate_putnbr(n5, buf);
+	bzero(buf, 30);
+	for (size_t len = 1; len < 11; len++)
+	{
+		signed long nbr = randi_len(len);
+		sprintf(buf, "%d", nbr);
+		validate_putnbr(nbr, buf);
+		bzero(buf, 30);
+		nbr = -nbr;
+		sprintf(buf, "%d", nbr);
+		validate_putnbr(nbr, buf);
+		bzero(buf, 30);
+	}
 }
 
 void	test_putchar_fd(void)
@@ -215,4 +227,9 @@ void	test_putnbr_fd(void)
 	validate_putnbr_fd(0);
 	validate_putnbr_fd(INT_MIN);
 	validate_putnbr_fd(INT_MAX);
+	for (size_t len = 1; len < 11; len++)
+	{
+		validate_putnbr_fd(randi_len(len));
+		validate_putnbr_fd(-(randi_len(len)));
+	}
 }

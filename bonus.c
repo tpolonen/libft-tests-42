@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 10:56:10 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/17 15:49:28 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/17 21:02:30 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ void	test_lstadd(void)
 	head->next = mid;
 	mid->next = tail;
 	ft_lstadd(&head, top);
-	assert(head = top);
+	assert(head == top);
 	assert(strcmp(str1, (char *) top->next->content) == 0);
 	assert(top->next->next == mid);
 	assert(top->next->next->next == tail);

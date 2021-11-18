@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/05 11:39:40 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/12 15:55:18 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/18 14:00:14 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,25 @@ void	rand_substrs(char *str1, char *str2, size_t len_pre, size_t len_post)
 size_t	randi(size_t max)
 {
 	return (arc4random_uniform(max));
+}
+
+size_t	randi_range(size_t min, size_t max)
+{
+	return (min + randi(max - min));
+}
+
+size_t	randi_len(size_t len)
+{
+	size_t max = 1;
+
+	while (len > 0)
+	{
+		max *= 10;
+		if (max > INT_MAX)
+			return (randi_range(1000000000, INT_MAX));
+		len--;
+	}
+	return (randi_range(max / 10, max));
 }
 
 void	print_mem(void *ptr, size_t size)

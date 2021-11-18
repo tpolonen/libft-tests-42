@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 18:36:42 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/17 14:20:20 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/18 14:23:44 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -333,4 +333,9 @@ void	test_itoa(void)
 	validate_itoa(n3);
 	validate_itoa(n4);
 	validate_itoa(n5);
+	for (size_t len = 1; len < 11; len++)
+	{
+		validate_itoa(randi_len(len));
+		validate_itoa(-(randi_len(len)));
+	}
 }

@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/30 18:49:43 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/12 15:49:24 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/18 14:20:11 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,8 @@ char	rand_char(void);
 char	*rand_str(char* str, size_t len);
 void	rand_substrs(char *str1, char *str2, size_t len_pre, size_t len_post);
 size_t	randi(size_t max);
+size_t	randi_range(size_t min, size_t max);
+size_t	randi_len(size_t len);
 void	print_mem(void *ptr, size_t size);
 void	print_mem_val(void *ptr, size_t size);
 int		signtest(int i1, int i2);

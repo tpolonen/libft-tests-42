@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/04 19:31:23 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/16 15:52:52 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/18 14:12:31 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,16 +44,40 @@ void	test_bzero(void)
 	assert(memcmp(str1, str2, sizeof(char) * len) == 0);
 }
 
+static void	rand_memcpy(size_t max_size, size_t i)
+{
+	char 	*str1, *str2;
+	size_t	size = randi(max_size);
+
+	str1 = (char *) malloc(sizeof(char) * size);
+	str2 = (char *) malloc(sizeof(char) * size);
+	for (size_t i = 0; i < size; i++)
+		*(str1 + i) = rand_char();
+	ft_memcpy(str2, str1, size);
+	if (memcmp(str1, str2, sizeof(char) * size) != 0)
+	{
+		printf("test #%zu failed (size=%zu)\nstr1\t[", i, size);
+		print_mem(str1, size);
+		printf("]\nstr2\t[");
+		print_mem(str2, size);
+		printf("]\n");
+		abort();
+	}
+}
+
 void	test_memcpy(void)
 {
 	char	str1[] = "fortytwoaaaaa";
 	char	str2[] = "aaaaaaaaaaaaa";
-	size_t 	len = 8;
+	size_t 	len = 8, tests = 100;
 
 	printf("...ft_memcpy\n");
 	ft_memcpy(str2, str1, len);
 	printf("[%s]\n", str2);
 	assert(memcmp(str1, str2, sizeof(char) * len + 2) == 0);
+	rand_memcpy(0, 0);
+	for (size_t i = 1; i < tests; i++)
+		rand_memcpy(100, i);
 }
 
 static void	basic_memccpy(void)
@@ -72,7 +96,6 @@ static void	basic_memccpy(void)
 		abort();
 	}
 }
-
 
 static void	rand_memccpy(size_t max_len, size_t i, char c)
 {
@@ -743,6 +766,31 @@ void	test_strrchr(void)
 		not_found_strrchr(100, '\0', i++);
 }
 
+static void partial_strstr(void)
+{
+	char	needle[] = "needle";
+	size_t	nee_len = strlen(needle);
+	char	*libc, *libft;
+
+	for (size_t i = 0; i < nee_len; i++)
+	{
+		char	haystack[] = "01234567890123456789";
+		size_t start = randi(10);
+		
+		memcpy(haystack + start, needle, nee_len);
+		memcpy(haystack + start + i, needle, nee_len);
+		libc = strstr(haystack, needle);
+		libft = ft_strstr(haystack, needle);
+		if (libc != libft)
+		{
+			printf("test #%zu failed\nhystck:\t[%s]\nneedle:\t[%s]\n",
+					i, haystack, needle);
+			printf("libc:\t[%s]\t%p\nlibft:\t[%s]\t%p\n", libc, libc, libft, libft);
+			abort();
+		}
+	}
+}
+
 static void	found_strstr(size_t max_haystack, size_t i)
 {
 	size_t	haystack_len = randi(max_haystack);
@@ -793,6 +841,8 @@ void	test_strstr(void)
 	size_t	tests = 100, i = 0;
 	printf("...ft_strstr\n");
 	found_strstr(0, i++);
+	printf("seeking needle when partial match present\n");
+	partial_strstr();
 	printf("seeking present needle\n");
 	while (i < tests)
 		found_strstr(30, i++);
@@ -801,6 +851,31 @@ void	test_strstr(void)
 	while (i < tests)
 		not_found_strstr(50, i++);
 
+}
+
+static void partial_strnstr(void)
+{
+	char	needle[] = "needle";
+	size_t	nee_len = strlen(needle);
+	char	*libc, *libft;
+
+	for (size_t i = 0; i < nee_len; i++)
+	{
+		char	haystack[] = "01234567890123456789";
+		size_t start = randi(10);
+		
+		memcpy(haystack + start, needle, nee_len);
+		memcpy(haystack + start + i, needle, nee_len);
+		libc = strnstr(haystack, needle, start + nee_len + i);
+		libft = ft_strnstr(haystack, needle, start + nee_len + i);
+		if (libc != libft)
+		{
+			printf("test #%zu failed\nhystck:\t[%s]\nneedle:\t[%s]\n",
+					i, haystack, needle);
+			printf("libc:\t[%s]\t%p\nlibft:\t[%s]\t%p\n", libc, libc, libft, libft);
+			abort();
+		}
+	}
 }
 
 void	too_short_strnstr(void)
@@ -867,6 +942,8 @@ void	test_strnstr(void)
 	size_t	tests = 100, i = 0;
 	printf("...ft_strnstr\n");
 	too_short_strnstr();
+	printf("seeking needle when partial match present\n");
+	partial_strnstr();
 	found_strnstr(0, 0, i++);
 	printf("seeking present needle\n");
 	while (i < tests)
@@ -1162,7 +1239,6 @@ void	test_atoi(void)
 	char	str3[] = " 0";
 	char	str4[] = " 2147483647";
 	char	str5[] = " -2147483648";
-	char	str6[] = "5464999935399999999";
 
 	printf("...ft_atoi\n");
 	valid_atoi(10, 0);
@@ -1180,7 +1256,17 @@ void	test_atoi(void)
 	i = 0;
 	while (i < tests)
 		bad_atoi(max_spaces, i++);
-	printf("final challenge\nstr6:[%s]\natoi:\t%d\nft_atoi\t%d\n", str6, atoi(str6), ft_atoi(str6));
+	printf("testing ints of all lengths\n");
+	for (int len = 1; len < 11; len++)
+	{
+		char *str = (char *) malloc(sizeof(char) * (len + 2));
+		sprintf(str, "+%zu", randi_len(len));
+		printf("[%11d]\t>\t%d\n", atoi(str), ft_atoi(str));
+		assert(ft_atoi(str) == atoi(str));
+		sprintf(str, "-%zu", randi_len(len));
+		printf("[%11d]\t>\t%d\n", atoi(str), ft_atoi(str));
+		assert(ft_atoi(str) == atoi(str));
+	}
 }
 
 static void	validate_chartest(int (*ft_func)(int), int (*lib_func)(int))
