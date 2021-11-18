@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/04 19:31:23 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/18 14:12:31 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/18 23:19:53 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,8 @@ static void	rand_memcpy(size_t max_size, size_t i)
 		printf("]\n");
 		abort();
 	}
+	free(str1);
+	free(str2);
 }
 
 void	test_memcpy(void)
@@ -105,11 +107,14 @@ static void	rand_memccpy(size_t max_len, size_t i, char c)
 	src = malloc(len);
 	ptr1 = malloc(len);
 	ptr2 = malloc(len);
-	memset(src, rand_char(), len);
-	if (isprint(c))
-		memset(src + randi(len), c, 1);
-	bzero(ptr1, len);
-	bzero(ptr2, len);
+	if (len > 0)
+	{
+		memset(src, rand_char(), len);
+		if (isprint(c))
+			memset(src + randi(len), c, 1);
+		bzero(ptr1, len);
+		bzero(ptr2, len);
+	}
 	memccpy(ptr1, src, c, len);
 	ft_memccpy(ptr2, src, c, len);
 	if (memcmp(ptr1, ptr2, len) != 0)
@@ -189,8 +194,11 @@ static void	found_memchr(size_t max_size, size_t i)
 	char	seek = rand_char();
 	
 	ptr = malloc(size);
-	memset(ptr, rand_char(), size);
-	memset(ptr + randi(size), seek, 1);
+	if (ptr && size > 0)
+	{
+		memset(ptr, rand_char(), size);
+		memset(ptr + randi(size), seek, 1);
+	}
 	if (ft_memchr(ptr, seek, size) != memchr(ptr, seek, size))
 	{
 		printf("test #%zu failed (c=%c)\nptr: [", i, seek);
@@ -853,6 +861,23 @@ void	test_strstr(void)
 
 }
 
+static void	too_short_strnstr(void)
+{
+	char	s1[] = "12345needle23456";
+	char	s2[] = "needle";
+
+	for (size_t i = 0; i < 11; i++)
+	{
+		char *p1 = strnstr(s1, s2, i), *p2 = ft_strnstr(s1, s2, i);
+		if (p1 != p2)
+		{
+			printf("failed when needle is not fully covered by len (n=%zu)\n", i);
+			printf("s1=[%s]\nlibc:\t%p\nlibft\t%p\n", s1, p1, p2);
+			abort();
+		}
+	}
+}
+
 static void partial_strnstr(void)
 {
 	char	needle[] = "needle";
@@ -862,7 +887,7 @@ static void partial_strnstr(void)
 	for (size_t i = 0; i < nee_len; i++)
 	{
 		char	haystack[] = "01234567890123456789";
-		size_t start = randi(10);
+		size_t	start = randi(10);
 		
 		memcpy(haystack + start, needle, nee_len);
 		memcpy(haystack + start + i, needle, nee_len);
@@ -870,25 +895,11 @@ static void partial_strnstr(void)
 		libft = ft_strnstr(haystack, needle, start + nee_len + i);
 		if (libc != libft)
 		{
-			printf("test #%zu failed\nhystck:\t[%s]\nneedle:\t[%s]\n",
-					i, haystack, needle);
+			printf("test #%zu failed (n=%zu)\nhystck:\t[%s]\nneedle:\t[%s]\n",
+					i, start + nee_len + i, haystack, needle);
 			printf("libc:\t[%s]\t%p\nlibft:\t[%s]\t%p\n", libc, libc, libft, libft);
 			abort();
 		}
-	}
-}
-
-void	too_short_strnstr(void)
-{
-	char	s1[] = "12345needle23456";
-	char	s2[] = "needle";
-	char	*p1 = strnstr(s1, s2, 7), *p2 = ft_strnstr(s1, s2, 7);
-
-	if (p1 != p2)
-	{
-		printf("failed when needle is not fully covered by len\n");
-		printf("s1=[%s]\nlibc:\t%p\nlibft\t%p\n", s1, p1, p2);
-		abort();
 	}
 }
 
@@ -941,6 +952,7 @@ void	test_strnstr(void)
 {
 	size_t	tests = 100, i = 0;
 	printf("...ft_strnstr\n");
+	printf("seeking needle when n is too short for full match\n");
 	too_short_strnstr();
 	printf("seeking needle when partial match present\n");
 	partial_strnstr();
@@ -1266,6 +1278,7 @@ void	test_atoi(void)
 		sprintf(str, "-%zu", randi_len(len));
 		printf("[%11d]\t>\t%d\n", atoi(str), ft_atoi(str));
 		assert(ft_atoi(str) == atoi(str));
+		free(str);
 	}
 }
 
