@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/04 19:31:23 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/19 11:32:32 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/19 14:56:19 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,10 @@ void	test_memset(void)
 	memset(ptr2, c, sizeof(char) * 8);
 	printf("[%s] vs [%s]\n", ptr1, ptr2);
 	assert(memcmp(ptr1, ptr2, sizeof(char) * 8) == 0);
+	printf("test with n=0\n");
+	ft_memset(ptr1, '\t', 0);
+	memset(ptr2, '\t', 0);
+	assert(memcmp(ptr1, ptr2, sizeof(char) * 8) == 0);
 	free(ptr1);
 	free(ptr2);
 }
@@ -39,8 +43,13 @@ void	test_bzero(void)
 	size_t 	len = strlen(str1);
 
 	printf("...ft_bzero\n");
+	ft_bzero(str1, 0);
+	bzero(str2, 0);
+	printf("n=0\t[%s]\n", str1);
+	assert(memcmp(str1, str2, sizeof(char) * 5) == 0);
 	ft_bzero(str1, len);
 	bzero(str2, len);
+	printf("n=%zu\t[%s]\n", len, str1);
 	assert(memcmp(str1, str2, sizeof(char) * len) == 0);
 }
 
@@ -71,13 +80,17 @@ void	test_memcpy(void)
 {
 	char	str1[] = "fortytwoaaaaa";
 	char	str2[] = "aaaaaaaaaaaaa";
+	char	str3[] = "aaaaaaaaaaaaa";
 	size_t 	len = 8, tests = 100;
 
 	printf("...ft_memcpy\n");
+	ft_memcpy(str3, str1, 0);
+	printf("len=0\t[%s]\n", str3);
+	assert(memcmp(str3, str2, sizeof(char) * len + 2) == 0);
 	ft_memcpy(str2, str1, len);
-	printf("[%s]\n", str2);
+	printf("len=8\t[%s]\n", str2);
 	assert(memcmp(str1, str2, sizeof(char) * len + 2) == 0);
-	rand_memcpy(0, 0);
+	printf("testing random strings\n");
 	for (size_t i = 1; i < tests; i++)
 		rand_memcpy(100, i);
 }
@@ -93,8 +106,43 @@ static void	basic_memccpy(void)
 	ptr2 = ft_memccpy(buf, str, 'i', 20);
 	if (ptr1 != ptr2)
 	{
-		printf("ft_memccpy returned wrong pointer: expected %p, got %p\n", ptr1, ptr2);
+		printf("returned wrong pointer: expected %p, got %p\n", ptr1, ptr2);
 		printf("src:\t[%s], c='i'\nmemccpy:\t[%s]\nft_memccpy:\t[%s]\n", str, ptr1, ptr2);
+		abort();
+	}
+}
+
+static void zero_memccpy(void)
+{
+	char	str[] = "Don't Panic !";
+	char	buf1[30];
+	char	buf2[30];
+	char	*ptr1, *ptr2;
+
+	bzero(buf1, 30);
+	bzero(buf2, 30);
+	ptr1 = memccpy(buf1, str, '\t', 0);
+	ptr2 = memccpy(buf2, str, '\t', 0);
+	if (ptr1 != ptr2)
+	{
+		printf("failed when size=0 and src doesn't contain c: expected %p, got %p\n", ptr1, ptr2);
+		printf("src:\t[%s], c='\t'\nmemccpy:\t[%s]\nft_memccpy:\t[%s]\n", str, ptr1, ptr2);
+		abort();
+	}
+	ptr1 = memccpy(buf1, str, 'D', 0);
+	ptr2 = memccpy(buf2, str, 'D', 0);
+	if (ptr1 != ptr2)
+	{
+		printf("failed when size=0 and src contains c: expected %p, got %p\n", ptr1, ptr2);
+		printf("src:\t[%s], c='D'\nmemccpy:\t[%s]\nft_memccpy:\t[%s]\n", str, ptr1, ptr2);
+		abort();
+	}	
+	ptr1 = memccpy(buf1, str, ' ', 0);
+	ptr2 = memccpy(buf2, str, ' ', 0);
+	if (ptr1 != ptr2)
+	{
+		printf("failed when size=0 and src contains c: expected %p, got %p\n", ptr1, ptr2);
+		printf("src:\t[%s], c=' '\nmemccpy:\t[%s]\nft_memccpy:\t[%s]\n", str, ptr1, ptr2);
 		abort();
 	}
 }
@@ -102,19 +150,16 @@ static void	basic_memccpy(void)
 static void	rand_memccpy(size_t max_len, size_t i, char c)
 {
 	void	*src, *ptr1, *ptr2;
-	size_t	len = randi(max_len);
+	size_t	len = randi(max_len) + 1;
 
 	src = malloc(len);
 	ptr1 = malloc(len);
 	ptr2 = malloc(len);
-	if (len > 0)
-	{
-		memset(src, rand_char(), len);
-		if (isprint(c))
-			memset(src + randi(len), c, 1);
-		bzero(ptr1, len);
-		bzero(ptr2, len);
-	}
+	memset(src, rand_char(), len);
+	if (isprint(c))
+		memset(src + randi(len), c, 1);
+	bzero(ptr1, len);
+	bzero(ptr2, len);
 	memccpy(ptr1, src, c, len);
 	ft_memccpy(ptr2, src, c, len);
 	if (memcmp(ptr1, ptr2, len) != 0)
@@ -141,7 +186,7 @@ void	test_memccpy(void)
 
 	printf("...ft_memccpy\n");
 	basic_memccpy();
-	rand_memccpy(0, i++, '\n');
+	zero_memccpy();
 	printf("copying with present char\n");
 	while (i < tests)
 		rand_memccpy(100, i++, rand_char());
@@ -187,6 +232,35 @@ void	test_memmove(void)
 	i = 0;
 }
 
+static void	zero_memchr(void)
+{
+	char	str[] = "hello there world!";
+	void 	*p1, *p2;
+
+	printf("testing with len=0 and s=[%s]\n", str);
+	p1 = memchr((void *) str, '?', 0);
+	p2 = memchr((void *) str, '?', 0);
+	if (p1 != p2)
+	{
+		printf("failed when size=0 and c is not present in string\n");
+		abort();
+	}
+	p1 = memchr((void *) str, '!', 0);
+	p2 = memchr((void *) str, '!', 0);
+	if (p1 != p2)
+	{
+		printf("failed when size=0 and c is present in string\n");
+		abort();
+	}
+ 	p1 = memchr((void *) str, 'h', 0);
+	p2 = memchr((void *) str, 'h', 0);
+	if (p1 != p2)
+	{
+		printf("failed when size=0 and c is first char in string\n");
+		abort();
+	}
+}
+
 static void	found_memchr(size_t max_size, size_t i)
 {
 	size_t	size = randi(max_size);
@@ -194,11 +268,8 @@ static void	found_memchr(size_t max_size, size_t i)
 	char	seek = rand_char();
 	
 	ptr = malloc(size);
-	if (ptr && size > 0)
-	{
-		memset(ptr, rand_char(), size);
-		memset(ptr + randi(size), seek, 1);
-	}
+	memset(ptr, rand_char(), size);
+	memset(ptr + randi(size), seek, 1);
 	if (ft_memchr(ptr, seek, size) != memchr(ptr, seek, size))
 	{
 		printf("test #%zu failed (c=%c)\nptr: [", i, seek);
@@ -233,6 +304,7 @@ void	test_memchr(void)
 	size_t	tests = 100, i = 0;
 
 	printf("...ft_memchr\n");
+	zero_memchr();
 	found_memchr(0, i++);
 	printf("seeking present char\n");
 	while (i < tests)
