@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/03 13:48:14 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/18 14:29:48 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/18 14:42:01 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,11 +118,11 @@ void	test_putnbr(void)
 	for (size_t len = 1; len < 11; len++)
 	{
 		signed long nbr = randi_len(len);
-		sprintf(buf, "%d", nbr);
+		sprintf(buf, "%ld", nbr);
 		validate_putnbr(nbr, buf);
 		bzero(buf, 30);
 		nbr = -nbr;
-		sprintf(buf, "%d", nbr);
+		sprintf(buf, "%ld", nbr);
 		validate_putnbr(nbr, buf);
 		bzero(buf, 30);
 	}

@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 18:36:42 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/18 14:23:44 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/19 11:18:30 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -269,6 +269,7 @@ static void validate_full_split(char const *s, char c, char const **expected)
 		assert(strcmp(words[i], expected[i]) == 0);
 		i++;
 	}
+	printf("[%s] vs [%s]\n", words[i], expected[i]);
 	if (words[i] != NULL)
 	{
 		printf("failed: split array does not terminate properly\n");
@@ -289,10 +290,12 @@ void	test_strsplit(void)
 
 	char const *full_s1[] = { "The", "ships", "hung", "in", "the", "sky", "in", "much", "the", "same", "way", "that", "bricks", "don't.", 0 };
 	char const *full_s3[] = { "Don't", " ", "Panic", "!", 0 };
+	char const *full_s6[] = { 0 };
 
 	printf("...ft_strsplit\n");
 	validate_full_split(s1, ' ', full_s1);
 	validate_full_split(s3, '/', full_s3);
+	validate_full_split(s6, '-', full_s6);
 	validate_split(s1, ' ', 7, "much");
 	validate_split(s2, '.', 1, " Lunchtime doubly so");
 	validate_split(s3, '/', 3, "!");
