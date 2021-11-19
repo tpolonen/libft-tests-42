@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/04 19:31:23 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/19 14:56:19 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/19 18:25:58 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@ void	test_memset(void)
 	printf("[%s] vs [%s]\n", ptr1, ptr2);
 	assert(memcmp(ptr1, ptr2, sizeof(char) * 8) == 0);
 	printf("test with n=0\n");
-	ft_memset(ptr1, '\t', 0);
-	memset(ptr2, '\t', 0);
+	ft_memset(ptr1, '\t', (0));
+	memset(ptr2, '\t', (0));
 	assert(memcmp(ptr1, ptr2, sizeof(char) * 8) == 0);
 	free(ptr1);
 	free(ptr2);
@@ -43,12 +43,12 @@ void	test_bzero(void)
 	size_t 	len = strlen(str1);
 
 	printf("...ft_bzero\n");
-	ft_bzero(str1, 0);
-	bzero(str2, 0);
+	bzero(str1, (0));
+	ft_bzero(str2, (0));
 	printf("n=0\t[%s]\n", str1);
 	assert(memcmp(str1, str2, sizeof(char) * 5) == 0);
-	ft_bzero(str1, len);
-	bzero(str2, len);
+	bzero(str1, len);
+	ft_bzero(str2, len);
 	printf("n=%zu\t[%s]\n", len, str1);
 	assert(memcmp(str1, str2, sizeof(char) * len) == 0);
 }
@@ -263,7 +263,7 @@ static void	zero_memchr(void)
 
 static void	found_memchr(size_t max_size, size_t i)
 {
-	size_t	size = randi(max_size);
+	size_t	size = randi(max_size) + 1;
 	void	*ptr;
 	char	seek = rand_char();
 	
@@ -283,7 +283,7 @@ static void	found_memchr(size_t max_size, size_t i)
 
 static void	not_found_memchr(size_t max_size, size_t i)
 {
-	size_t	size = randi(max_size);
+	size_t	size = randi(max_size) + 1;
 	void	*ptr;
 	
 	ptr = malloc(size);
@@ -376,13 +376,33 @@ static void	diff_memcmp(size_t max_size_pre, size_t max_size_post, size_t i)
 	free(ptr2);
 }
 
+static void	zero_memcmp(void)
+{
+	char	str1[] = "So long, and thanks for all the fish!";
+	char	str2[] = "So long, and thanks for all the fish!";
+	char	str3[] = "So long, and fortytwo";
+	char	str4[] = "Fortytwo";
+	int		p1, p2;
+
+	printf("testing with size=0\n");
+	p1 = memcmp(str1, str2, (0));
+	p2 = ft_memcmp(str1, str2, (0));
+	assert(p1 == p2);
+	p1 = memcmp(str1, str3, (0));
+	p2 = ft_memcmp(str1, str3, (0));
+	assert(p1 == p2);
+	p1 = memcmp(str1, str4, (0));
+	p2 = ft_memcmp(str1, str4, (0));
+	assert(p1 == p2);
+}
+
 void	test_memcmp(void)
 {
 	size_t	tests = 100, i = 0;
 
 	printf("...ft_memcmp\n");
+	zero_memcmp();
 	printf("comparing similar pointers\n");
-	same_memcmp(0, i++);
 	while (i < tests)
 		same_memcmp(100, i++);
 	i = 0;
@@ -455,7 +475,7 @@ static void	rand_strcpy(size_t max_len, size_t i)
 	cpy = (char *) malloc(sizeof(char) * (len + buf_extra + 1));
 	memset(cpy, 'a', len + buf_extra + 1);
 	rand_str(str, len);
-	ft_strcpy(cpy, str);
+	cpy = ft_strcpy(cpy, str);
 	if (strcmp(str, cpy) != 0)
 	{
 		printf("test #%zu failed\nstr: [%s]\ncpy: [%s]\n", i, str, cpy);
@@ -477,7 +497,7 @@ void	test_strcpy(void)
 
 static void	rand_strncpy(size_t max_len, size_t i)
 {
-	size_t	len = randi(max_len);
+	size_t	len = randi(max_len) + 1;
 	size_t	buf_extra = 5;
 	size_t	n = randi(len + 1);
 	char	*str, *cpy;
@@ -511,13 +531,28 @@ static void	smaller_src_strncpy(void)
 	}
 }
 
+static void	zero_strncpy(void)
+{
+	char	str0[] = "fortytwo";
+	char	cp1[30] = "aaaaaaaaaaaaaaaa";
+	char	cp2[30] = "aaaaaaaaaaaaaaaa";
+
+	strncpy(cp1, str0, 0);
+	ft_strncpy(cp2, str0, 0);
+	if (memcmp(cp1, cp2, strlen(str0)) != 0)
+	{
+		printf("failed when len=0\nsrc:\t[%s]\nlibc:\t[%s]\nlibft:\t[%s]\n", str0, cp1, cp2);
+		abort();
+	}
+}
+
 void	test_strncpy(void)
 {
 	size_t	tests = 100, i = 0;
 
 	printf("...ft_strncpy\n");
 	smaller_src_strncpy();
-	rand_strncpy(0, i++);
+	zero_strncpy();
 	while (i < tests)
 		rand_strncpy(100, i++);
 }
@@ -599,11 +634,27 @@ static void	null_strncat(void)
 	}
 }
 
+static void	zero_strncat(void)
+{
+	char	buf1[] = "So long ";
+	char	buf2[] = "So long ";
+	char	src[] = "and thanks for all the fish";
+	char 	*p1, *p2;
+
+	p1 = strncat(buf1, src, 0);
+	p2 = ft_strncat(buf2, src, 0);
+	if (strcmp(buf1, buf2) != 0)
+	{
+		printf("failed when n=0\nlibc\t[%s]\nlibft\t[%s]\n", p1, p2);
+		abort();
+	}
+}
+
 static void	rand_strncat(size_t max_len, size_t i)
 {
 	char	*str1, *str2, *ft_cat, *libc_cat;
-	size_t	len1 = randi(max_len);
-	size_t	len2 = randi(max_len);
+	size_t	len1 = randi(max_len) + 1;
+	size_t	len2 = randi(max_len) + 1;
 	size_t	n = randi(len2);
 
 	str1 = (char *) malloc(sizeof(char) * (len1 + 1));
@@ -638,7 +689,7 @@ void	test_strncat(void)
 
 	printf("...ft_strncat\n");
 	null_strncat();
-	rand_strncat(0, i++);
+	zero_strncat();
 	while (i < tests)
 		rand_strncat(50, i++);
 }
@@ -725,9 +776,6 @@ void	test_strlcat(void)
 	printf("...ft_strlcat\n");
 	ret_strlcat();
 	dstsize_test();
-	#ifndef LINUX
-		rand_strlcat(0, i++);
-	#endif
 	while (i < tests)
 		rand_strlcat(75, i++);
 }
