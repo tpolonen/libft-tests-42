@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 18:36:42 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/19 11:18:30 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/22 14:25:05 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	test_memalloc(void)
 	i = 0;
 	while (i < 8)
 	{
-		printf("%p: %d\n", ptr + i, *(int *) (ptr + i));
+		printf("%p: %d\n", ptr + i, *(char *) (ptr + i));
 		assert(*(char *) (ptr + i) == 0);
 		i++;
 	}
@@ -37,7 +37,7 @@ void	test_memdel(void)
 	printf("...ft_memdel\n");
 	ptr = malloc(8);
 	ft_memdel(&ptr);
-	assert(ptr == 0);
+	assert(ptr == NULL);
 }
 
 void	test_strnew(void)
@@ -62,7 +62,7 @@ void	test_strdel(void)
 	printf("...ft_strdel\n");
 	str = (char *) malloc(sizeof(char) * 8);
 	ft_strdel(&str);
-	assert(str == 0);
+	assert(str == NULL);
 }
 
 void 	test_strclr(void)
@@ -91,7 +91,9 @@ void	test_striter(void)
 	int		i;
 
 	printf("...ft_striter\n");
+	printf("[%s] -> ", str);
 	ft_striter(str, &f_striter);
+	printf("[%s]\n", str);
 	i = 0;
 	while (i < 8)
 		assert(str[i++] == 'a');
@@ -109,7 +111,9 @@ void	test_striteri(void)
 	int		i;
 
 	printf("...ft_striteri\n");
+	printf("[%s] -> ", str);
 	ft_striteri(str, &f_striteri);
+	printf("[%s]\n", str);
 	i = 0;
 	while (i < 8)
 	{
@@ -130,8 +134,9 @@ void	test_strmap(void)
 	char		*s2;
 
 	printf("...ft_strmap\n");
+	printf("[%s] -> ", s1);
 	s2 = ft_strmap(s1, &f_strmap);
-	printf("%s\n", s2);
+	printf("[%s]\n", s2);
 	assert(strcmp("gpsuzuxp", s2) == 0);
 	free(s2);
 }
@@ -147,6 +152,7 @@ void	test_strmapi(void)
 	char		*s2;
 
 	printf("...ft_strmapi\n");
+	printf("[%s] -> ", s1);
 	s2 = ft_strmapi(s1, &f_strmapi);
 	printf("%s\n", s2);
 	assert(strcmp("01234567", s2) == 0);
@@ -170,8 +176,11 @@ void	test_strnequ(void)
 	char const	s2[] = "fortyseven";
 
 	printf("...ft_strnequ\n");
-	assert(ft_strnequ(s1, s2, 5) == 1);
-	assert(ft_strnequ(s1, s2, 8) == 0);
+	for (size_t i = 0; i <= strlen(s2); i++)
+	{
+		printf("%zu: %d\n", i, ft_strnequ(s1, s2, i));
+		assert(ft_strnequ(s1, s2, i) == (strncmp(s1, s2, i) != 0 ? 0 : 1));
+	}
 }
 
 void	test_strsub(void)
