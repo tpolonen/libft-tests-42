@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/04 19:31:23 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/22 16:39:02 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/22 17:33:41 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,37 @@ static void	rand_memcpy(size_t max_size, size_t i)
 	free(str2);
 }
 
+static void zero_memcpy(void)
+{
+	char	str0[] = "";
+	char	str1[] = "(null)";
+	char	*str2 = NULL;
+	char	*target;
+	char 	*p1 = NULL, *p2 = NULL;
+
+	target = (char *) malloc(0);
+	printf("testing with n=0\n");
+	if ((p1 = memcpy(target, str0, 0)) != (p2 = ft_memcpy(target, str0, 0)))
+	{
+		printf("failed when str=\"\"\n");
+		printf("libc:\t%p\nlibft:\t%p\n", p1, p2);
+		abort();
+	}
+	if ((p1 = memcpy(target, str1, 0)) != (p2 = ft_memcpy(target, str1, 0)))
+	{
+		printf("failed when str=\"(null)\"\n");
+		printf("libc:\t%p\nlibft:\t%p\n", p1, p2);
+		abort();
+	}
+	if ((p1 = memcpy(target, str2, 0)) != (p2 = ft_memcpy(target, str2, 0)))
+	{
+		printf("failed when str=NULL\n");
+		printf("libc:\t%p\nlibft:\t%p\n", p1, p2);
+		abort();
+	}
+	free(target);
+}
+
 void	test_memcpy(void)
 {
 	char	str1[] = "fortytwoaaaaa";
@@ -84,6 +115,7 @@ void	test_memcpy(void)
 	size_t 	len = 8, tests = 100;
 
 	printf("...ft_memcpy\n");
+	zero_memcpy();
 	ft_memcpy(str3, str1, 0);
 	printf("len=0\t[%s]\n", str3);
 	assert(memcmp(str3, str2, sizeof(char) * len + 2) == 0);
