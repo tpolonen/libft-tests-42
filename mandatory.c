@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/04 19:31:23 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/19 14:56:19 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/21 17:00:31 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -756,7 +756,7 @@ static void	found_strchr(size_t max_len, char seek, size_t i)
 
 static void	not_found_strchr(size_t max_len, char seek, size_t i)
 {
-	size_t	len = randi(max_len);
+	size_t	len = randi(max_len) + 1;
 	char	*str;
 
 	str = (char *) malloc(sizeof(char) * len + 1);
@@ -775,7 +775,6 @@ void	test_strchr(void)
 	size_t	tests = 100, i = 0;
 
 	printf("...ft_strchr\n");
-	not_found_strchr(0, 'a', i++);
 	printf("seeking present char\n");
 	while (i < tests)
 		found_strchr(100, rand_char(), i++);
@@ -791,7 +790,7 @@ void	test_strchr(void)
 
 static void	found_strrchr(size_t max_len, char seek, size_t i)
 {
-	size_t	len = randi(max_len);
+	size_t	len = randi(max_len) + 1;
 	size_t	hits = 3;
 	char	*str;
 
@@ -813,7 +812,7 @@ static void	found_strrchr(size_t max_len, char seek, size_t i)
 
 static void	not_found_strrchr(size_t max_len, char seek, size_t i)
 {
-	size_t	len = randi(max_len);
+	size_t	len = randi(max_len) + 1;
 	char	*str;
 
 	str = (char *) malloc(sizeof(char) * len + 1);
@@ -832,7 +831,6 @@ void	test_strrchr(void)
 	size_t	tests = 100, i = 0;
 
 	printf("...ft_strrchr\n");
-	not_found_strrchr(0, 'a', i++);
 	printf("seeking present char\n");
 	while (i < tests)
 		found_strrchr(100, rand_char(), i++);
@@ -920,7 +918,6 @@ void	test_strstr(void)
 {
 	size_t	tests = 100, i = 0;
 	printf("...ft_strstr\n");
-	found_strstr(0, i++);
 	printf("seeking needle when partial match present\n");
 	partial_strstr();
 	printf("seeking present needle\n");
@@ -1028,7 +1025,6 @@ void	test_strnstr(void)
 	too_short_strnstr();
 	printf("seeking needle when partial match present\n");
 	partial_strnstr();
-	found_strnstr(0, 0, i++);
 	printf("seeking present needle\n");
 	while (i < tests)
 		found_strnstr(40, 8, i++);
@@ -1116,7 +1112,6 @@ void	test_strcmp(void)
 
 	printf("...ft_strcmp\n");
 	printf("comparing similar strings\n");
-	strcmp_same(0);
 	while (i < tests)
 	{
 		strcmp_same(100);
@@ -1318,6 +1313,7 @@ void	bad_atoi(size_t max_spaces, size_t i)
 void	test_atoi(void)
 {
 	size_t	tests = 100, max_spaces = 10, i = 0;
+	char	str0[] = "                 ";
 	char	str1[] = " 42";
 	char	str2[] = " -42";
 	char	str3[] = " 0";
@@ -1328,6 +1324,7 @@ void	test_atoi(void)
 	valid_atoi(10, 0);
 	printf("testing easy strings\n");
 	printf("%d\n%d\n%d\n%d\n%d\n", ft_atoi(str1), ft_atoi(str2), ft_atoi(str3), ft_atoi(str4), ft_atoi(str5));
+	assert(ft_atoi(str0) == atoi(str0));
 	assert(ft_atoi(str1) == atoi(str1));
 	assert(ft_atoi(str2) == atoi(str2));
 	assert(ft_atoi(str3) == atoi(str3));
