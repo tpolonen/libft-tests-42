@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/03 13:48:14 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/18 14:42:01 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/23 18:38:50 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	test_putchar(void)
 	ft_putchar('!');
 	fclose(fd);
 	fd = fopen(FPATH, "r");
-	*c = fgetc(fd);
+	*c = (char) fgetc(fd);
 	fclose(fd);
 	freopen("/dev/tty", "w", stdout);
 	printf("[%c]\n", *c);
@@ -77,14 +77,14 @@ void	test_putendl(void)
 	remove(FPATH);
 }
 
-static void	validate_putnbr(int n, char const *expected)
+static void	validate_putnbr(signed long  n, char const *expected)
 {
 	FILE	*fd;
 	char	buf[13];
 
 	bzero(buf, 13);
 	fd = freopen(FPATH, "w", stdout);
-	ft_putnbr(n);
+	ft_putnbr((int) n);
 	fclose(fd);
 	fd = fopen(FPATH, "r");
 	fread(buf, 13, 1, fd);
@@ -97,11 +97,11 @@ static void	validate_putnbr(int n, char const *expected)
 
 void	test_putnbr(void)
 {
-	int	n1 = 42;
-	int	n2 = -42;
-	int	n3 = 0;
-	int n4 = INT_MIN;
-	int	n5 = INT_MAX;
+	signed long	n1 = 42;
+	signed long	n2 = -42;
+	signed long	n3 = 0;
+	signed long n4 = INT_MIN;
+	signed long	n5 = INT_MAX;
 	char	buf[30];
 
 	printf("...ft_putnbr\n");
@@ -117,7 +117,7 @@ void	test_putnbr(void)
 	bzero(buf, 30);
 	for (size_t len = 1; len < 11; len++)
 	{
-		signed long nbr = randi_len(len);
+		signed long nbr = (signed long) randi_len(len);
 		sprintf(buf, "%ld", nbr);
 		validate_putnbr(nbr, buf);
 		bzero(buf, 30);
@@ -194,7 +194,7 @@ void	test_putendl_fd(void)
 	else printf("opening fd failed\n");
 }
 
-static void	validate_putnbr_fd(int n)
+static void	validate_putnbr_fd(signed long n)
 {
 	char	buf[30];
 	char	verif[30];
@@ -202,14 +202,14 @@ static void	validate_putnbr_fd(int n)
 
 	bzero(buf, 30);
 	bzero(verif, 30);
-	len = sprintf(verif, "%d", n);
+	len = (size_t) sprintf(verif, "%d", (int) n);
 	int fd = open(FPATH, O_WRONLY | O_CREAT, 0666);
 	if (fd == -1)
 	{
 		printf("opening fd failed\n");
 		return ;
 	}
-	ft_putnbr_fd(n, fd);
+	ft_putnbr_fd((signed int) n, fd);
 	close(fd);
 	fd = open(FPATH, O_RDONLY);
 	read(fd, buf, len);
@@ -229,7 +229,7 @@ void	test_putnbr_fd(void)
 	validate_putnbr_fd(INT_MAX);
 	for (size_t len = 1; len < 11; len++)
 	{
-		validate_putnbr_fd(randi_len(len));
-		validate_putnbr_fd(-(randi_len(len)));
+		validate_putnbr_fd((signed long) randi_len(len));
+		validate_putnbr_fd((signed long) (-(randi_len(len))));
 	}
 }

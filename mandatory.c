@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/04 19:31:23 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/23 17:49:21 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/23 20:27:59 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -943,6 +943,23 @@ void	test_strrchr(void)
 		not_found_strrchr(100, '\0', i++);
 }
 
+static void fullsize_strstr(void)
+{
+	char s1[] = "MZIRIBMZIRIBMZP";
+	char s2[] = "MZIRIBMZP";
+	char *p1, *p2;
+
+	p1 = strstr(s1, s2);
+	p2 = ft_strstr(s1, s2);
+	if (p1 != p2)
+	{
+		printf("failed when partial match for self similar needle present\n");
+		printf("haystack\t[%s]\tneedle\t[%s]\n", s1, s2);
+		printf("libc\t[%s]\t(%p)\nlibft\t[%s]\t(%p)\n", p1, p1, p2, p2);
+		abort();
+	}
+}
+
 static void partial_strstr(void)
 {
 	char	needle[] = "needle";
@@ -1017,6 +1034,7 @@ void	test_strstr(void)
 {
 	size_t	tests = 100, i = 0;
 	printf("...ft_strstr\n");
+	fullsize_strstr();
 	printf("seeking needle when partial match present\n");
 	partial_strstr();
 	printf("seeking present needle\n");
@@ -1341,7 +1359,7 @@ void	valid_atoi(size_t max_spaces, size_t i)
 {
 	size_t	spaces = randi(max_spaces) + 1;
 	char	*str, *s1;
-	int		n = randi(INT_MAX);
+	int		n = (int) randi(INT_MAX);
 
 	str = (char *) malloc(sizeof(char) * (spaces + 12));
 	s1 = str;
@@ -1376,7 +1394,7 @@ void	bad_atoi(size_t max_spaces, size_t i)
 	size_t	spaces = randi(max_spaces) + 1;
 	size_t	len = spaces + 20;
 	char	*str, *s1;
-	int		n = randi(INT_MAX);
+	int		n = (int) randi(INT_MAX);
 
 	str = (char *) malloc(sizeof(char) * (len));
 	bzero(str, len);
@@ -1437,7 +1455,7 @@ void	test_atoi(void)
 	while (i < tests)
 		bad_atoi(max_spaces, i++);
 	printf("testing ints of all lengths\n");
-	for (int len = 1; len < 11; len++)
+	for (unsigned int len = 1; len < 11; len++)
 	{
 		char *str = (char *) malloc(sizeof(char) * (len + 2));
 		sprintf(str, "+%zu", randi_len(len));

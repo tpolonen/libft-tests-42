@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/05 11:39:40 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/18 14:00:14 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/23 18:47:28 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	rand_substrs(char *str1, char *str2, size_t len_pre, size_t len_post)
 
 size_t	randi(size_t max)
 {
-	return (arc4random_uniform(max));
+	return (arc4random_uniform((unsigned int) max));
 }
 
 size_t	randi_range(size_t min, size_t max)

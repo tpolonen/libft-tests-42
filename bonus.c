@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 10:56:10 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/17 21:02:30 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/23 18:44:11 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,7 +164,7 @@ static t_list	*uppercase_content(t_list *elem)
 		nc = new_content;
 		while (*oc)
 		{
-			*nc = toupper(*oc);
+			*nc = (char) toupper(*oc);
 			nc++;
 			oc++;
 		}

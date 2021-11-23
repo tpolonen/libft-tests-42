@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 18:36:42 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/22 14:25:05 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/23 19:19:53 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ void	test_striter(void)
 
 static void	f_striteri(unsigned int i, char *c)
 {
-	*c = '0' + i;
+	*c = (char) ('0' + i);
 }
 
 void	test_striteri(void)
@@ -143,7 +143,7 @@ void	test_strmap(void)
 
 static char	f_strmapi(unsigned int i, char c)
 {
-	return (c + i);
+	return ((char) (c + (char) i));
 }
 
 void	test_strmapi(void)
@@ -161,11 +161,13 @@ void	test_strmapi(void)
 
 void	test_strequ(void)
 {
+	char const	s0[] = "";
 	char const	s1[] = "fortytwo";
 	char const	s2[] = "fortytwo";
 	char const	s3[] = "fortyseven";
 
 	printf("...ft_strequ\n");
+	assert(ft_strequ(s0, "") == 1);
 	assert(ft_strequ(s1, s2) == 1);
 	assert(ft_strequ(s1, s3) == 0);
 }
@@ -347,7 +349,7 @@ void	test_itoa(void)
 	validate_itoa(n5);
 	for (size_t len = 1; len < 11; len++)
 	{
-		validate_itoa(randi_len(len));
-		validate_itoa(-(randi_len(len)));
+		validate_itoa((int) randi_len(len));
+		validate_itoa((int) (-(randi_len(len))));
 	}
 }
