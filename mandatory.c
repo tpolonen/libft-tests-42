@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/04 19:31:23 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/22 17:33:41 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/23 17:49:21 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,6 +179,24 @@ static void zero_memccpy(void)
 	}
 }
 
+static void	edge_memccpy(void)
+{
+	char s1[] = "hello";
+	char buf1[10], buf2[10];
+
+	bzero(buf1, 10);
+	bzero(buf2, 10);
+	memccpy(buf1, s1, 'o', 4);
+	ft_memccpy(buf2, s1, 'o', 4);
+	if (strcmp(buf1, buf2) != 0)
+	{
+		printf("fails when c is the array item n\n");
+		printf("str\t[%s] (c='o', n=4)\n",s1);
+		printf("libc\t[%s]\nlibft\t[%s]\n", buf1, buf2);
+		abort();
+	}
+}
+
 static void	rand_memccpy(size_t max_len, size_t i, char c)
 {
 	void	*src, *ptr1, *ptr2;
@@ -219,6 +237,7 @@ void	test_memccpy(void)
 	printf("...ft_memccpy\n");
 	basic_memccpy();
 	zero_memccpy();
+	edge_memccpy();
 	printf("copying with present char\n");
 	while (i < tests)
 		rand_memccpy(100, i++, rand_char());
