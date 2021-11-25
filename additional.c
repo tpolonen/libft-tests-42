@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 18:36:42 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/23 19:19:53 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/25 11:40:59 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,7 @@ static void	f_striter(char *c)
 void	test_striter(void)
 {
 	char	str[] = "fortytwo";
+	char	s0[] = "";
 	int		i;
 
 	printf("...ft_striter\n");
@@ -98,6 +99,9 @@ void	test_striter(void)
 	while (i < 8)
 		assert(str[i++] == 'a');
 	assert(str[i] == '\0');
+	ft_striter(s0, &f_striter);
+	printf("[%s] -> [%s]\n", "", s0);
+	assert(strcmp(s0, "") == 0);
 }
 
 static void	f_striteri(unsigned int i, char *c)
@@ -108,6 +112,7 @@ static void	f_striteri(unsigned int i, char *c)
 void	test_striteri(void)
 {
 	char	str[] = "fortytwo";
+	char	s0[] = "";
 	int		i;
 
 	printf("...ft_striteri\n");
@@ -121,6 +126,9 @@ void	test_striteri(void)
 		i++;
 	}
 	assert(str[i] == '\0');
+	ft_striteri(s0, &f_striteri);
+	printf("[%s] -> [%s]\n", "", s0);
+	assert(strcmp(s0, "") == 0);
 }
 
 static char	f_strmap(char c)
@@ -131,6 +139,7 @@ static char	f_strmap(char c)
 void	test_strmap(void)
 {
 	char const	s1[] = "fortytwo";
+	char const	s0[] = "";
 	char		*s2;
 
 	printf("...ft_strmap\n");
@@ -138,6 +147,9 @@ void	test_strmap(void)
 	s2 = ft_strmap(s1, &f_strmap);
 	printf("[%s]\n", s2);
 	assert(strcmp("gpsuzuxp", s2) == 0);
+	free(s2);
+	s2 = ft_strmap(s0, &f_strmap);
+	printf("[%s] -> [%s]\n", s0, s2);
 	free(s2);
 }
 
@@ -149,6 +161,7 @@ static char	f_strmapi(unsigned int i, char c)
 void	test_strmapi(void)
 {
 	char const	s1[] = "00000000";
+	char const	s0[] = "";
 	char		*s2;
 
 	printf("...ft_strmapi\n");
@@ -156,6 +169,9 @@ void	test_strmapi(void)
 	s2 = ft_strmapi(s1, &f_strmapi);
 	printf("%s\n", s2);
 	assert(strcmp("01234567", s2) == 0);
+	free(s2);
+	s2 = ft_strmapi(s0, &f_strmapi);
+	printf("[%s] -> [%s]\n", s0, s2);
 	free(s2);
 }
 
