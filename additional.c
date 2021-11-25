@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/29 18:36:42 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/25 11:40:59 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/25 14:08:25 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,7 +167,7 @@ void	test_strmapi(void)
 	printf("...ft_strmapi\n");
 	printf("[%s] -> ", s1);
 	s2 = ft_strmapi(s1, &f_strmapi);
-	printf("%s\n", s2);
+	printf("[%s]\n", s2);
 	assert(strcmp("01234567", s2) == 0);
 	free(s2);
 	s2 = ft_strmapi(s0, &f_strmapi);

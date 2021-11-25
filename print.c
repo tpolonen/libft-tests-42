@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/03 13:48:14 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/23 18:38:50 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/25 13:44:27 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,7 @@ static void	validate_putnbr(signed long  n, char const *expected)
 	FILE	*fd;
 	char	buf[13];
 
+	printf("[%s] -> ", expected);
 	bzero(buf, 13);
 	fd = freopen(FPATH, "w", stdout);
 	ft_putnbr((int) n);
