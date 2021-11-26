@@ -6,18 +6,23 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/05 11:39:40 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/23 18:47:28 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/25 16:50:43 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "tests.h"
 
-char	rand_char(void)
+char	randc(int (*ischar) (int))
 {
 	char c = (char) (arc4random_uniform(128));
-	while (!isprint(c))
+	while (!ischar(c))
 		c = (char) (arc4random_uniform(128));
 	return (c);
+}
+
+char	rand_char(void)
+{
+	return (randc(&isprint));
 }
 
 char	*rand_str(char *str, size_t len)
