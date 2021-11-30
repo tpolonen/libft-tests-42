@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/30 18:49:43 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/25 16:51:00 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/30 18:55:55 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@
 # endif
 
 /* Utility functions */
+void	del_content(void *content, size_t size);
 char	randc(int (*ischar) (int));
 char	rand_char(void);
 char	*rand_str(char* str, size_t len);

@@ -6,11 +6,23 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/05 11:39:40 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/25 16:50:43 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/11/30 18:44:40 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "tests.h"
+
+void	del_content(void *content, size_t size)
+{
+	if (content != NULL)
+	{
+		printf("deleting list content [%s]\n", (char *) content);
+		bzero(content, size);
+		free(content);
+	}
+	else printf("deleting list with no content\n");
+}
+
 
 char	randc(int (*ischar) (int))
 {
