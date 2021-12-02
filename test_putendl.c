@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/01 19:08:03 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/12/01 19:08:26 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/12/02 19:01:12 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,4 +36,5 @@ void	test_putendl(void)
 	assert(strncmp(buf, str, strlen(str)) == 0);
 	assert(buf[strlen(str)] == '\n');
 	remove(FPATH);
+	free(buf);
 }

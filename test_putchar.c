@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/01 19:07:19 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/12/01 19:07:27 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/12/02 19:00:28 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ void	test_putchar(void)
 	printf("[%c]\n", *c);
 	assert(*c == '!');
 	remove(FPATH);
+	free(c);
 }
 
 

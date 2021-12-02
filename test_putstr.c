@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/01 19:07:34 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/12/01 19:07:56 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/12/02 19:02:45 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ void	test_putstr(void)
 
 	printf("...ft_putstr\n");
 	buf = (char *) malloc(sizeof(char) * (strlen(str) + 1));
+	bzero(buf, strlen(str) + 1);
 	fd = freopen(FPATH, "w", stdout);
 	ft_putstr(str);
 	fclose(fd);
@@ -35,4 +36,5 @@ void	test_putstr(void)
 	printf("[%s]\n", buf);
 	assert(strcmp(buf, str) == 0);
 	remove(FPATH);
+	free(buf);
 }
