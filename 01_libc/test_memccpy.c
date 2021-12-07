@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/28 17:53:13 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/28 17:55:40 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/12/03 17:59:51 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,12 +39,12 @@ static void zero_memccpy(void)
 
 	bzero(buf1, 30);
 	bzero(buf2, 30);
-	ptr1 = memccpy(buf1, str, '\t', 0);
-	ptr2 = memccpy(buf2, str, '\t', 0);
+	ptr1 = memccpy(buf1, str, 'k', 0);
+	ptr2 = memccpy(buf2, str, 'k', 0);
 	if (ptr1 != ptr2)
 	{
 		printf("failed when size=0 and src doesn't contain c: expected %p, got %p\n", ptr1, ptr2);
-		printf("src:\t[%s], c='\t'\nmemccpy:\t[%s]\nft_memccpy:\t[%s]\n", str, ptr1, ptr2);
+		printf("src:\t[%s], c='k'\nmemccpy:\t[%s]\nft_memccpy:\t[%s]\n", str, ptr1, ptr2);
 		abort();
 	}
 	ptr1 = memccpy(buf1, str, 'D', 0);
