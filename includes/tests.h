@@ -6,7 +6,7 @@
 /*   By: tpolonen <tpolonen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/30 18:49:43 by tpolonen          #+#    #+#             */
-/*   Updated: 2021/11/25 16:51:00 by tpolonen         ###   ########.fr       */
+/*   Updated: 2021/12/08 20:32:59 by tpolonen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,11 @@
 # include <time.h>
 # include <ctype.h>
 # include <limits.h>
+# include <sys/types.h>
+# include <sys/uio.h>
+# include <unistd.h>
+# include <fcntl.h>
+
 # ifdef LINUX
 #  include <bsd/string.h>
 #  include <bsd/stdlib.h>
@@ -28,6 +33,7 @@
 # endif
 
 /* Utility functions */
+void	del_content(void *content, size_t size);
 char	randc(int (*ischar) (int));
 char	rand_char(void);
 char	*rand_str(char* str, size_t len);
@@ -105,4 +111,6 @@ void	test_lstadd(void);
 void	test_lstiter(void);
 void	test_lstmap(void);
 
+/* Custom functions */
+void	test_putmem(void);
 #endif
